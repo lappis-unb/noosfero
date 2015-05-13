@@ -1,0 +1,32 @@
+html, body {
+    width:100%;
+    height: 100%;
+}
+#header {
+    width: 100%;
+    height: 20%;
+    float: left;
+    border: 1px solid;
+}
+#map {
+    width: 80%;
+    height: 80%;
+    float: left;
+    border: 1px solid;
+}
+#sidebar {
+    width: 19%;
+    height: 80%;
+    float: left;
+    border: 1px solid;
+}
+#toggle {
+    width: 10%;
+    height: 40%;
+    margin-right: 6.5%;
+    margin-top: 3.5%;
+    float: right;
+}
+.closed-toggle {
+    display: none;
+}

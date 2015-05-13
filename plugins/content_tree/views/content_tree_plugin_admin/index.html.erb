@@ -1,15 +1,21 @@
 <h1>Comunidades</h1>
 <% @communities.each do |c| %>
-  <divclass="sitesection">
-    <p class="expand-al">
-      <a onclick = "jQuery('#<%= "#{c.id}" %>').slideToggle('fast')" href='#'>+</a><%= link_to "#{c.name}", c.url %>
+  <div>
+    <p><!-- tag p is used to force a line jump -->
+      <a class="expand-all" href='#'>+</a>
+      <%= link_to "#{c.name}", c.url %>
     </p>
-    <p id = <%= "#{c.id}" %> class="content-all">
+    <div class="closed-toggle" id = <%= "#{c.id}" %> class="content-all">
       dadasd
-      <br>
-    </p>
-  </divclass="sitesection">
+    </div>
+  </div>
 <% end %>
+
+<div id="header">HEADER
+    <input type="button" value="Toggle" id="toggle">
+</div>
+<div id="map">MAP</div>
+<div id="sidebar">SIDEBAR</div>
 
 
 
@@ -46,5 +52,3 @@ $( "#cms-branch" ).click(function() {
 <% @enterprises.each do |e| %>
   <%= link_to "#{e.name}", e.url %><br>
 <% end %>
-
-<%= javascript_include_tag '../plugins/content_tree/javascripts/style.js' %>

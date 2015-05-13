@@ -10,4 +10,14 @@ class ContentTreePlugin < Noosfero::Plugin
     _("A plugin that does this and that.")
   end
 
+  def stylesheet?
+    true
+  end
+
+  def js_files
+    %w(
+      javascripts/style.js
+    )
+  end
+
 end
