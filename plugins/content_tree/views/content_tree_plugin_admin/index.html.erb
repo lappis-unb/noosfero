@@ -1,0 +1,50 @@
+<h1>Comunidades</h1>
+<% @communities.each do |c| %>
+  <divclass="sitesection">
+    <p class="expand-al">
+      <a onclick = "jQuery('#<%= "#{c.id}" %>').slideToggle('fast')" href='#'>+</a><%= link_to "#{c.name}", c.url %>
+    </p>
+    <p id = <%= "#{c.id}" %> class="content-all">
+      dadasd
+      <br>
+    </p>
+  </divclass="sitesection">
+<% end %>
+
+
+
+<div id="cms-branch">
+  <span id="expand">|+|</span>
+  <p>
+    This is the paragraph to end all paragraphs.  You
+    should feel <em>lucky</em> to have seen such a paragraph in
+    your life.  Congratulations!
+  </p>
+</div>
+
+
+<script>
+$( "#cms-branch" ).click(function() {
+  $( "p" ).slideToggle( "slow" );
+  $( "span" ).innerHTML = "|-|";
+});
+</script>
+
+<h1>Pessoas</h1>
+<% @persons.each do |p| %>
+  <div id="cms-branch">
+    <%= link_to "+\t", '#' %><%= "#{p.name}" %>
+  <% if p.is_admin? %>
+    <%= button_without_text :'reset-admin-role', _('Reset admin role'), {:action => 'reset_admin_role', :id => p, :q => @q}, :filter => @filter, :confirm => _("Do you want to reset this user as administrator?") %>
+  <% else %>
+    <%= link_to "#{p.name}", p.url %><%= link_to "#{p.name}", p.url %>, <%= button_without_text :'set-admin-role', _('Set admin role'), {:action => 'set_admin_role', :id => p, :q => @q}, :filter => @filter, :confirm => _("Do you want to set this user as administrator?") %><br>
+  <% end %>
+  </div>
+<% end %>
+
+<h1>Enterprises</h1>
+<% @enterprises.each do |e| %>
+  <%= link_to "#{e.name}", e.url %><br>
+<% end %>
+
+<%= javascript_include_tag '../plugins/content_tree/javascripts/style.js' %>
