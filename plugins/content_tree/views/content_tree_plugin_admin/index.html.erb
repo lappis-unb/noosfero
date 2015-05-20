@@ -2,39 +2,15 @@
 <% @communities.each do |c| %>
   <div>
     <p><!-- tag p is used to force a line jump -->
-      <a class="expand-all" href='#'>+</a>
-      <%= link_to "#{c.name}", c.url %>
+      <a class="expand-all" href='#'>
+        + <%= link_to "#{c.name}", c.url %>
+      </a>
     </p>
-    <div class="closed-toggle" id = <%= "#{c.id}" %> class="content-all">
-      dadasd
+    <div class="closed-toggle" id = "<%= "#{c.id}" %>">
+      <%= render 'folders', c: c %>
     </div>
   </div>
 <% end %>
-
-<div id="header">HEADER
-    <input type="button" value="Toggle" id="toggle">
-</div>
-<div id="map">MAP</div>
-<div id="sidebar">SIDEBAR</div>
-
-
-
-<div id="cms-branch">
-  <span id="expand">|+|</span>
-  <p>
-    This is the paragraph to end all paragraphs.  You
-    should feel <em>lucky</em> to have seen such a paragraph in
-    your life.  Congratulations!
-  </p>
-</div>
-
-
-<script>
-$( "#cms-branch" ).click(function() {
-  $( "p" ).slideToggle( "slow" );
-  $( "span" ).innerHTML = "|-|";
-});
-</script>
 
 <h1>Pessoas</h1>
 <% @persons.each do |p| %>

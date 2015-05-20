@@ -1,0 +1,22 @@
+<% c.articles.each do |f| %>
+  <% unless f.parent.kind_of?(Folder) %>
+    <div>
+      <p>
+        <a class="expand-all" href='#'>
+          <% if !f.kind_of?(Folder) %>
+            <ul><%= link_to "#{f.name}", f.url %></ul>
+          <% else %>
+            <ul> + <%= link_to "#{f.name}", f.url %></ul>
+            <div class="closed-toggle">
+              <ul><ul>
+                <p class="closed-toggle">
+                  <%= render 'articles', f: f %>
+                </p>
+              </ul></ul>
+            </div>
+          <% end %>
+        </a>
+      </p>
+    </div>
+  <% end %>
+<% end %>

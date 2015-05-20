@@ -1,0 +1,20 @@
+<% f.children.each do |j| %>
+  <div>
+    <p>
+      <a class="expand-all" href='#'>
+        <% if !j.kind_of?(Folder) %>
+          <%= link_to "#{j.name}", j.url %>
+        <% else %>
+          <ul> + <%= link_to "#{j.name}", j.url %></ul>
+          <div class="closed-toggle">
+            <ul><ul>
+              <p class="closed-toggle">
+                <%= render 'open_folder', j: j %>
+              </p>
+            </ul></ul>
+          </div>
+        <% end %>
+      </a>
+    </p>
+  </div>
+<% end %>
