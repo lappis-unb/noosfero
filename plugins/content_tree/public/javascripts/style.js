@@ -6,9 +6,11 @@
     var child_div = parent_div.children("div");
     console.log(child_div);
     if(child_div.css("display") == "none") {
-      $(this).html("- ");
+      $(this).find( 'img' ).attr('src', $(this).find('img').attr('src').replace("plus", "minus") );
+      $(this).find( 'img' ).attr('alt', $(this).find('img').attr('alt').replace("+", "-") );
     } else {
-      $(this).html("+");
+      $(this).find( 'img' ).attr('src', $(this).find('img').attr('src').replace("minus", "plus") );
+      $(this).find( 'img' ).attr('alt', $(this).find('img').attr('alt').replace("-", "+") );
     }
 
     child_div.slideToggle('fast');

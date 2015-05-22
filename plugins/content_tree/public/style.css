@@ -30,3 +30,18 @@ html, body {
 .closed-toggle {
     display: none;
 }
+
+.content_tree_expand img{
+    width:15px; /* you can use % */
+    height: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(+20%);
+}
+/*
+.content_tree_plus {
+  display: block;
+  background-image: url('images/plus-square.png') ;
+  width: 50px; /* Width of new image */
+/*  height: 50px; /* Height of new image */
+/*}*/

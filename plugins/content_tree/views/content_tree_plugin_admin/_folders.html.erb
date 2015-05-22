@@ -6,7 +6,7 @@
           <% if !f.kind_of?(Folder) %>
             <ul><%= link_to "#{f.name}", f.url %></ul>
           <% else %>
-            <ul> + <%= link_to "#{f.name}", f.url %></ul>
+            <ul> <span class="content_tree_expand"><img src="/plugins/content_tree/images/plus-square.png"  alt="+" /> </span> <%= link_to "#{f.name}", f.url %></ul>
             <div class="closed-toggle">
               <ul><ul>
                 <p class="closed-toggle">

@@ -1,9 +1,10 @@
-<h1>Comunidades</h1>
+<h1>Comunidades</h1> 
 <% @communities.each do |c| %>
   <div>
     <p><!-- tag p is used to force a line jump -->
       <a class="expand-all" href='#'>
-        + <%= link_to "#{c.name}", c.url %>
+        <span class="content_tree_expand"><img src="/plugins/content_tree/images/plus-square.png"  alt="+" /> </span>
+        <%=link_to "#{c.name}", c.url%>
       </a>
     </p>
     <div class="closed-toggle" id = "<%= "#{c.id}" %>">
