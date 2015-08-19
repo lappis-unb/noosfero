@@ -5,3 +5,13 @@
 <%=labelled_check_box(_('Publish submissions'), 'article[publish_submissions]', true, @article.publish_submissions) %>
 
 <%=labelled_check_box(_('Allow users change submissions privacy?'), 'article[allow_visibility_edition]', true, @article.allow_visibility_edition) %>
+
+<%=labelled_form_field(_('What is the time limit for this file to be uploaded?'), (
+  date_range_field('article[begining]', 'article[ending]', @article.begining, @article.ending,
+                   '%Y-%m-%d %H:%M',
+                   { :time => true, :change_month => true, :change_year => true,
+                     :date_format => 'yy-mm-dd', :time_format => 'hh:mm' },
+                     { :size => 14 })
+)) %>
+
+<%=labelled_check_box(_('Allow the sending of files after the period'), 'article[ignore_time]', true, @article.ignore_time) %>

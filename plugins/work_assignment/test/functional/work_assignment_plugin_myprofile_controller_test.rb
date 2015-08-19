@@ -185,7 +185,7 @@ class WorkAssignmentPluginMyprofileControllerTest < ActionController::TestCase
   end
 
   private
-    def create_work_assignment(name = nil, profile = nil, publish_submissions = nil, allow_visibility_edition = nil)
-      @work_assignment = WorkAssignmentPlugin::WorkAssignment.create!(:name => name, :profile => profile, :publish_submissions => publish_submissions, :allow_visibility_edition => allow_visibility_edition)
+    def create_work_assignment(name = nil, profile = nil, publish_submissions = nil, allow_visibility_edition = nil, begining = Time.now, ending = Time.now + 1.day)
+      @work_assignment = WorkAssignmentPlugin::WorkAssignment.create!(:name => name, :profile => profile, :publish_submissions => publish_submissions, :allow_visibility_edition => allow_visibility_edition, :begining => begining, :ending => ending)
     end
 end

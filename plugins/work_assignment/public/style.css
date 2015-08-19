@@ -1,2 +1,20 @@
 .icon-newwork-assignment { background-image: url(../../designs/icons/tango/Tango/16x16/categories/applications-office.png) }
 .icon-work-assignment { background-image: url(../../designs/icons/tango/Tango/16x16/categories/applications-office.png) }
+
+#work-assignment-time-ago{
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #E6E6E6;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  display: block;
+  text-align: center;
+}
+
+#work-assignment-date{
+  font-weight: 700;
+}
+
+#work-assignment-final-date{
+	padding: 3px;
+}

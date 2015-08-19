@@ -96,8 +96,27 @@ class CmsControllerTest < ActionController::TestCase
     assert_equal other_work_assignment.publish_submissions, submission.parent.published
   end
 
+  should 'deny access to users and admin when Work Assignment time expired' do
+    @organization.add_member(@person)
+    begining = Time.now - 2.day
+    ending = Time.now - 1.day
+    work_assignment = create_work_assignment('Work Assignment', @organization, true, nil, begining, ending)
+    post :upload_files, :profile => @organization.identifier, :parent_id => work_assignment.id, :uploaded_files => [fixture_file_upload('/files/test.txt', 'text/plain')]
+    assert_response :forbidden
+    assert_template 'access_denied'
+  end
+
+  should 'Not deny access to users and admin when Work Assignment time expired and ignore time is true' do
+    @organization.add_member(@person)
+    begining = Time.now - 2.day
+    ending = Time.now - 1.day
+    work_assignment = create_work_assignment('Work Assignment', @organization, true, nil, begining, ending, true)
+    get :upload_files, :profile => @organization.identifier, :parent_id => work_assignment.id, :uploaded_files => [fixture_file_upload('/files/test.txt', 'text/plain')]
+    assert_response :success
+  end
+
   private
-    def create_work_assignment(name = nil, profile = nil, publish_submissions = nil, allow_visibility_edition = nil)
-      @work_assignment = WorkAssignmentPlugin::WorkAssignment.create!(:name => name, :profile => profile, :publish_submissions => publish_submissions, :allow_visibility_edition => allow_visibility_edition)
+    def create_work_assignment(name = nil, profile = nil, publish_submissions = nil, allow_visibility_edition = nil, begining = Time.now, ending = Time.now + 1.day, ignore_time = false)
+      @work_assignment = WorkAssignmentPlugin::WorkAssignment.create!(:name => name, :profile => profile, :publish_submissions => publish_submissions, :allow_visibility_edition => allow_visibility_edition, :begining => begining, :ending => ending, :ignore_time => ignore_time)
     end
 end

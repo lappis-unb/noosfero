@@ -3,10 +3,16 @@ class WorkAssignmentPlugin::WorkAssignment < Folder
   settings_items :publish_submissions, :type => :boolean, :default => false
   settings_items :default_email, :type => :string, :default => ""
   settings_items :allow_visibility_edition, :type => :boolean, :default => false
+  settings_items :ignore_time, :type => :boolean, :default => false
+  settings_items :begining, :type => :DateTime
+  settings_items :ending, :type => :DateTime
 
   attr_accessible :publish_submissions
   attr_accessible :default_email
   attr_accessible :allow_visibility_edition
+  attr_accessible :begining
+  attr_accessible :ending
+  attr_accessible :ignore_time
   
   def self.icon_name(article = nil)
     'work-assignment'
@@ -58,5 +64,10 @@ class WorkAssignmentPlugin::WorkAssignment < Folder
   def cache_key_with_person(params = {}, user = nil, language = 'en')
     cache_key_without_person + (user && profile.members.include?(user) ? "-#{user.identifier}" : '')
   end
+
+  def expired?
+    !(begining..ending).cover?(Time.now)
+  end
+
   alias_method_chain :cache_key, :person  
 end

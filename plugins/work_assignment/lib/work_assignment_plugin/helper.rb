@@ -90,4 +90,36 @@ module WorkAssignmentPlugin::Helper
       :tokenized_children => @tokenized_children, :back_to => @back_to}, :method => :post
     end
   end
+
+  def time_ago(work_assignment)
+    time_ago = time_ago_in_words(work_assignment.ending, include_seconds: true)
+    unless work_assignment.expired?
+      content_tag('div',
+        content_tag('span', _('Remaining time for sending files: ')) +
+        content_tag('span', time_ago, :id => 'work-assignment-date')
+      )
+    else
+      content_tag('div',
+        content_tag('span', work_assignment.ignore_time ?  _('The time limit for sending files expired, but can still be done. Delay time: ') : _('The time limit for sending files expired! '), :id => 'left-block') +
+        content_tag('span', time_ago, :id => 'work-assignment-date')
+      )
+    end
+  end
+
+  def final_date(ending_date)
+    content_tag('div',
+      content_tag('span', _('Final date to submission: ')) +
+      content_tag('span', show_day_of_week(ending_date) + ", " +
+        show_time(ending_date), :id => 'work-assignment-date'
+      ),
+      id: 'work-assignment-final-date'
+    )
+  end
+
+  def display_date(work_assignment)
+    ending = work_assignment.ending
+    content_tag('div', final_date(ending) + time_ago(work_assignment),
+      id: 'work-assignment-time-ago'
+    )
+  end
 end
