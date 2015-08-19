@@ -1,0 +1,12 @@
+<% profile = nil %>
+<% @article.each do |work_group| %>
+  <% unless work_group.work_assignment_list.empty? %>
+    <% if profile != work_group.profile %>
+      <h1><%= work_group.profile.name %></h1>
+      <% profile = work_group.profile%>
+    <% end %>
+    <div class="work-assignment-content">
+      <%= render partial: 'work_assignment_list', locals: {work_group: work_group} %>
+    </div>
+  <% end %>
+<% end %>

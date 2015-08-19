@@ -5,8 +5,8 @@
 <% end %>
 
 <div id='uploaded_files'>
-  <% 3.times do %>
-    <%= render :partial => 'upload_file', :locals => {:size => size} %>
+  <% 3.times do |t| %>
+    <%= render :partial => 'upload_file', :locals => {:size => size, :id_uploaded => t} %>
   <% end %>
 </div>
 

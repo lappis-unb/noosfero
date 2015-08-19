@@ -1,0 +1,45 @@
+<h1>Assign grade</h1>
+
+<table> 
+  <tbody>
+    <tr>
+      <th><%= _('Author name: ') %></th>
+      <th><%= @submission.setting[:author_name] %></th>
+    </tr>
+    <tr>
+      <td><%= _('File name: ') %></td>
+      <td><%= link_to(@submission.name, @submission.url) %></td>
+    </tr>
+    <tr>
+      <td><%= _('Upload at: ') %></td>
+      <td><%=  @submission.created_at %></td>
+    </tr>
+    <tr>
+      <td><%= _('Last evaluation date: ') %></td>
+      <td><%=  @submission.valuation_date ? @submission.valuation_date : '-' %></td>
+    </tr>
+    <tr>
+      <td><%= _('Current Grade: ') %></td>
+      <td><%=  @submission.valuation_date ? @submission.grade_version : '-' %></td>
+    </tr>
+  </tbody>
+</table>
+
+<%= labelled_form_for :uploaded_file, :url => {:action => 'assign_grade'} do |f| %>
+
+  <%= hidden_field_tag('submission', @submission.id) %>
+
+  <%= labelled_form_field _('Grade'), text_field_tag(:grade_version, @submission.grade_version)%>
+
+  <% if @submission.parent.parent.work_assignment_final_grade_options.downcase == "optional grade" %>
+
+    <%= labelled_form_field _('Final Grade'), (check_box_tag :final_grade, nil, @submission.id == @submission.parent.grade_submission_id) %>
+
+  <% end %>
+
+  <% button_bar do %>
+    <%= submit_button :assign_grade, _('Assign Grade') %>
+    <%= modal_close_button(_('Cancel')) %>
+  <% end %>
+
+<% end %>

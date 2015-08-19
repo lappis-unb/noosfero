@@ -1,0 +1,14 @@
+<div class='work-assignment-group'>
+  <%= render :file => 'shared/tiny_mce' %>
+
+  <%= required f.text_field('name', :size => '64', :maxlength => 150) %>
+
+  <%=labelled_form_field(_('Period: '), (date_range_field('article[start_date]', 'article[end_date]', @article.start_date, @article.end_date, '%Y-%m-%d %H:%M',
+                   { :time => true, :change_month => true, :change_year => true,
+                     :date_format => 'yy-mm-dd', :time_format => 'hh:mm' },
+                     { :size => 14 })
+  )) %>
+
+  <%= render :partial => 'shared/lead_and_body', :locals => {:tiny_mce => true, :body_label => 'Description:'} %>
+
+</div>

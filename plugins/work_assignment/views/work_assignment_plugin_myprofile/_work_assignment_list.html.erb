@@ -1,0 +1,33 @@
+<h2 class="work-assignment-title">
+  <%= _('Work Assignment List ') + work_group.name %>
+</h2>
+<div class="work-assignment-list">
+  <% work_group.work_assignment_list.each do |work| %>
+    <div class="work-assignment-list-content" id="work-assignment-<%= work.status %>">
+      <div class="work-assignment-list-name">
+        <%= work.name %>
+      </div>
+      <div class="work-assignment-list-grade">
+        <% folder = work.children.find_by_slug(user.name.to_slug) %>
+          <%= _('Grade: ') + folder.final_grade.to_s if folder %>
+      </div>
+      <div class="work-assignment-list-actions">
+        <%= button_without_text :eyes, _('View'), work.url %>
+        <% if work.allow_edit?(user) && !remove_content_button(:edit, work) %>
+          <% content = content_tag('span', label_for_edit_article(work)) %>
+              <% url = work_group.profile.admin_url.merge({ :controller => 'cms', :action => 'edit', :id => work.id, :success_back_to => url_for(work.parent.view_url) }) %>
+          <%= expirable_button work, :edit, _('Edit'), url if !remove_content_button(:edit, work) %>
+        <% end %>
+        <% if work_group.profile.members.include?(current_user.person) && (!work.expired? || work.ignore_time) %>
+          <%= button_without_text 'upload-file', c_('Upload files'), work_group.profile.admin_url.merge(:controller => 'cms', :action => 'upload_files', :parent_id => work) %>
+        <% end %>
+      </div>
+      <div class="work-assignment-list-date">
+        <strong><%= _('From ') %></strong>
+        <%= show_time(work.begining, true) %>
+        <strong><%= _('to ') %></strong>
+        <%= show_time(work.ending, true) %>
+      </div>
+    </div>
+  <% end %>
+</div>

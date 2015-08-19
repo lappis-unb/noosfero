@@ -18,7 +18,14 @@ class WorkAssignmentPlugin < Noosfero::Plugin
   end
 
   def content_types
-    [WorkAssignmentPlugin::WorkAssignment] if context.respond_to?(:profile) && context.profile.organization?
+    types = []
+    if context.respond_to?(:profile) && context.profile.organization?
+      parent_id = context.params[:parent_id] if context.respond_to?(:params) && context.params
+      types << WorkAssignmentPlugin::WorkAssignmentGroup unless parent_id
+      types << WorkAssignmentPlugin::WorkAssignment
+    end
+
+    types
   end
 
   def stylesheet?
@@ -31,7 +38,7 @@ class WorkAssignmentPlugin < Noosfero::Plugin
 
   def content_remove_upload(content)
     if content.kind_of?(WorkAssignmentPlugin::WorkAssignment)
-      !content.profile.members.include?(context.send(:user))
+      !content.profile.members.include?(context.send(:user)) || (content.expired? && !content.ignore_time)
     end
   end
 
@@ -51,6 +58,14 @@ class WorkAssignmentPlugin < Noosfero::Plugin
       :block => block }
   end
 
+  def control_panel_buttons
+    { :title => _('My courses'),
+      :icon => '',
+      :url => {:controller => 'work_assignment_plugin_myprofile',
+        :action => 'work_assignment_group_list'}
+    } if profile.person?
+  end
+
   def cms_controller_filters
     block = proc do
       if request.post? && params[:uploaded_files]
@@ -66,11 +81,23 @@ class WorkAssignmentPlugin < Noosfero::Plugin
         end
       end
     end
-
-    { :type => 'after_filter',
+    validate_block = proc do
+      @article = Article.find_by_id(params[:parent_id])
+      if @article && @article.type == "WorkAssignmentPlugin::WorkAssignment" && @article.expired? && !@article.ignore_time
+        render_access_denied(_("The time limit for uploading work over."), _("Oops ... you cannot go ahead here"))
+        session[:notice] = _('The timeout expired!')
+      end
+    end
+    [
+      { :type => 'after_filter',
       :method_name => 'send_email_after_upload_file',
       :options => {:only => 'upload_files'},
-      :block => block }
+      :block => block },
+      { :type => 'before_filter',
+      :method_name => 'validate_upload_files',
+      :options => {:only => 'upload_files'},
+      :block => validate_block }
+    ]
   end
 
   def upload_files_extra_fields(article)
@@ -80,5 +107,9 @@ class WorkAssignmentPlugin < Noosfero::Plugin
         render :partial => 'notify_text_field',  :locals => { :size => '45'}
       end
     end
+  end
+
+  def self.extra_blocks
+    { WorkAssignmentPlugin::WorkAssignmentListBlock => {}, WorkAssignmentPlugin::GroupListBlock => {:position => 1} }
   end
 end

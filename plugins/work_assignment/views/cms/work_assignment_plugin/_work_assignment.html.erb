@@ -1,7 +1,34 @@
-<%= render :partial => 'folder', :locals => {:f => f} %>
+<%= required f.text_field('name', :size => '64', :maxlength => 150) %>
+
+<%= labelled_form_field(_('Description:'), text_area(:article, :body, :rows => 3, :cols => 64)) %>
 
 <%= labelled_form_field(_('Default email message:'), text_area(:article, :default_email, :rows => 3, :cols => 64)) %>
 
 <%= labelled_check_box(_('The submissions can be viewed by anyone'), 'article[publish_submissions]', true, @article.publish_submissions) %>
 
 <%=labelled_check_box(_('Allow users change submissions privacy?'), 'article[allow_visibility_edition]', true, @article.allow_visibility_edition) %>
+
+<%=labelled_form_field(_('What is the time limit for this file to be uploaded?'), (
+  date_range_field('article[begining]', 'article[ending]', @article.begining, @article.ending,
+                   '%Y-%m-%d %H:%M',
+                   { :time => true, :change_month => true, :change_year => true,
+                     :date_format => 'yy-mm-dd', :time_format => 'hh:mm' },
+                     { :size => 14 })
+)) %>
+
+<%=labelled_check_box(_('Allow the sending of files after the period'), 'article[ignore_time]', true, @article.ignore_time) %>
+
+<h1><%= _("Evaluation Management") %> </h1>
+
+<%=labelled_check_box(_('Activate evaluation'), 'article[work_assignment_activate_evaluation]', true, @article.work_assignment_activate_evaluation) %>
+
+<br>
+
+<%=labelled_check_box(_('Publish grade'), 'article[publish_grades]', true, @article.publish_grades) %>
+<br>
+
+<% final_grade_options = @article.final_grade_options.map{|s| ["#{s}", s] } %>
+
+<%= labelled_select(_('Final grade options:'), 'article[work_assignment_final_grade_options]', :first, :last, @article.work_assignment_final_grade_options,  final_grade_options)%>
+
+<%= hidden_field_tag('parent_id', params[:parent_id]) %>

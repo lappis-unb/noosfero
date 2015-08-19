@@ -1,0 +1,13 @@
+<% if @work_assignment_group && !@work_assignment_group.path.blank? %>
+  <div id="article-parent">
+    <%= button(:back, _('Go back to %s') % @work_assignment_group.short_title, @work_assignment_group.url) %>
+  </div>
+<% end %>
+<div class="work-assignment-content">
+  <%= render partial: 'work_assignment_list', locals: {work_group: @work_assignment_group} %>
+  <% if profile.admins.include?(user) %>
+    <div class="block-footer-content">
+      <%= link_to _('Add %s') % WorkAssignmentPlugin::WorkAssignment.short_description, :controller => 'cms', :action => 'new', :type => 'WorkAssignmentPlugin::WorkAssignment', :parent_id => @work_assignment_group.id %>
+    </div>
+  <% end %>
+</div>

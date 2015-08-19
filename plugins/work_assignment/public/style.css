@@ -1,2 +1,174 @@
 .icon-newwork-assignment { background-image: url(../../designs/icons/tango/Tango/16x16/categories/applications-office.png) }
 .icon-work-assignment { background-image: url(../../designs/icons/tango/Tango/16x16/categories/applications-office.png) }
+
+.work-assignment-time-information {
+  padding: 10px;
+  margin-bottom: 15px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  display: block;
+  text-align: center;
+  margin: 2px 0px 0px 0px;
+}
+
+.work-assignment-time-information .button-bar {
+  float: right;
+  margin: -4px 0px 0px 0px;
+}
+
+#work-assignment-open {
+  color: #31708f;
+  background-color: #D9EDF7;
+  border-color: #BCE8F1;
+}
+
+#work-assignment-allowed {
+  color: #8A6D3B;
+  background-color: #FCF8E3;
+  border-color: #faebcc;
+}
+
+#work-assignment-expired {
+  color: #A94442;
+  background-color: #f2DEDE;
+  border-color: #EBCCD1;
+}
+
+.work-assignment-button-list {
+  margin-left: 200px;
+}
+
+.work-assignment-list {
+  position: relative;
+}
+
+.work-assignment-group-name {
+  float: left;
+  width: 37%;
+}
+
+.work-assignment-header-list-block {
+  border-bottom: 2px solid #AAA;
+}
+
+.work-assignment-content {
+  border-style: solid;
+  border-color: #babdb6;
+	border-width: 1px;
+	border-radius: 10px;
+	box-shadow: 1px 1px 2px #888888;
+	padding: 8px;
+	margin-bottom: 5px;
+}
+
+.work-assignment-header-list-block h2 a {
+	color #A12;
+}
+
+.work-assignment-title {
+  color: #888a85;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.work-assignment-list-name {
+  float: left;
+  font-weight: bold;
+  width: 30%;
+  height: 100%;
+}
+
+.work-assignment-list-content {
+  border: none;
+  border-bottom: 1px dotted;
+  display: block;
+  height: 40px;
+  margin-top: 5px;
+  padding:5px 0 5px 5px;
+}
+
+.work-assignment-list-actions {
+  float: right;
+  text-align: right;
+  width: 200px;
+}
+
+.work-assignment-list-date {
+  margin-top: 5px;
+  float: right;
+}
+
+.work-assignment-list-grade {
+  margin: 0px 0px 0px 0px;
+  float: left;
+}
+
+.work-assignment-list-actions a.button {
+  background-color: transparent !important;
+}
+
+#work-assignment-date {
+  font-weight: 700;
+}
+
+#work-assignment-final-date {
+	padding: 3px;
+}
+
+#list-recent-grades ul {
+  padding: 0px;
+  margin: 0px;
+}
+
+#list-recent-grades ul li {
+  list-style: none;
+  background-color: #FFF;
+  padding: 0px;
+  margin: 5px 0px;
+  background-color: #EEE;
+  background-position: 4px 50%;
+  border-radius: 4px;
+}
+
+#list-recent-grades ul li a {
+  font-size: 14px;
+  line-height: 24px;
+  color: #000;
+  text-decoration:none;
+  background-color: #EEE;
+  background-position: 4px 50%;
+  border-radius: 4px;
+  display: block;
+  padding-left: 4px;
+}
+
+#list-recent-grades ul li a:hover {
+  background-color: #555753;
+  color: #FFF;
+  text-decoration: none;
+}
+
+.view-all-work-assignment-list {
+    background: url(/designs/themes/base/imgs/arrow-right-p.png) 100% 50% no-repeat;
+    position: absolute;
+    top: 2px;
+    right: 0px;
+    font-size: 11px;
+    color: #000 !important;
+    text-decoration: none;
+    padding-right: 15px;
+}
+
+.view-all-work-assignment-list:hover {
+    text-decoration: none;
+}
+
+.block-footer-content {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.work-assignment-group-date {
+  text-align: right;
+}

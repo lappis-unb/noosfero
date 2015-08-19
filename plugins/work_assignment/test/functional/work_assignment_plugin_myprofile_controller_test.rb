@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../../../test/test_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 require 'work_assignment_plugin_myprofile_controller'
 
 # Re-raise errors caught by the controller.
@@ -184,8 +184,127 @@ class WorkAssignmentPluginMyprofileControllerTest < ActionController::TestCase
     assert_equal false, submission.published
   end
 
-  private
-    def create_work_assignment(name = nil, profile = nil, publish_submissions = nil, allow_visibility_edition = nil)
-      @work_assignment = WorkAssignmentPlugin::WorkAssignment.create!(:name => name, :profile => profile, :publish_submissions => publish_submissions, :allow_visibility_edition => allow_visibility_edition)
-    end
+# work_assignment grade functionality
+
+  should 'the final grade not show if the evaluation option isnt selected' do
+    @organization.add_member(@person)
+    work_assignment = create_work_assignment('Work Assignment', @organization, nil, nil, nil, nil, false, false)
+
+    folder = work_assignment.find_or_create_author_folder(@person)
+    folder.parent.save!
+
+    file = create_uploaded_file("/files/file.txt", @organization, folder, @person, @person, true)
+
+    post :assign_grade, :profile => @organization.identifier, :submission => file.id, :grade_version => 6
+    assert_template 'access_denied'
+
+    file.reload
+    assert_nil folder.final_grade
+  end
+
+  should 'the final grade be updated with action assign_grade' do
+    @organization.add_member(@person)
+    work_assignment = create_work_assignment('Work Assignment', @organization, nil, true, nil, nil, true, true)
+    folder = work_assignment.find_or_create_author_folder(@person)
+    file = create_uploaded_file("/files/file.txt", @organization, folder, @person, @person, true)
+
+    folder.reload #update children
+
+    grade = 6
+    post :assign_grade, :profile => @organization.identifier, :submission => file.id, :grade_version => grade
+    assert_equal folder.final_grade, grade
+  end
+
+  should 'the final grade be the highest if the highest option is selected' do
+    @organization.add_member(@person)
+    work_assignment = create_work_assignment('Work Assignment', @organization, nil, true, nil, nil, true, true)
+    folder = work_assignment.find_or_create_author_folder(@person)
+    file = create_uploaded_file("/files/file.txt", @organization, folder, @person, @person, true)
+    other_file = create_uploaded_file("file2.txt", @organization, folder, @person, @person, true)
+
+    folder.reload #update children
+    folder.parent.work_assignment_final_grade_options = "Highest Grade"
+    folder.parent.save
+
+    post :assign_grade, :profile => @organization.identifier, :submission => file.id, :grade_version => 6
+    post :assign_grade, :profile => @organization.identifier, :submission => other_file.id, :grade_version => 5
+
+    @back_to = url_for(work_assignment.url)
+
+    assert_redirected_to @back_to
+    file.reload
+    other_file.reload
+
+    assert_equal folder.final_grade, 6
+  end
+
+  should 'the final grade be the latest when the latest option is selected' do
+    @organization.add_member(@person)
+    work_assignment = create_work_assignment('Work Assignment', @organization, nil, true, nil, nil, true, true)
+    folder = work_assignment.find_or_create_author_folder(@person)
+    file = create_uploaded_file("file.txt", @organization, folder, @person, @person, true)
+    other_file = create_uploaded_file("file2.txt", @organization, folder, @person, @person, true)
+
+    folder.reload
+    folder.parent.work_assignment_final_grade_options = "Last Grade"
+    folder.parent.save
+
+    post :assign_grade, :profile => @organization.identifier, :submission => file.id, :grade_version => 6
+    post :assign_grade, :profile => @organization.identifier, :submission => other_file.id, :grade_version => 5
+
+    @back_to = url_for(work_assignment.url)
+    assert_redirected_to @back_to
+    other_file.reload
+
+    assert_equal folder.final_grade, other_file.setting[:grade_version]
+  end
+
+  should 'the final grade be the optional when the optional grade is selected' do
+    @organization.add_member(@person)
+    work_assignment = create_work_assignment('Work Assignment', @organization, nil, true, nil, nil, true, true)
+    folder = work_assignment.find_or_create_author_folder(@person)
+    file = create_uploaded_file("file.txt", @organization, folder, @person, @person, true)
+    folder.reload
+    folder.parent.work_assignment_final_grade_options = "Optional Grade"
+    folder.parent.save
+
+    post :assign_grade, :profile => @organization.identifier, :submission => file.id, :grade_version => 6, :final_grade => true
+
+    folder.reload
+    file.reload
+
+    assert_equal folder.final_grade, file.setting[:grade_version]
+  end
+
+  should 'find all work_assignment that belongs to a group' do
+    @organization.add_member(@person)
+
+    work_assignment_group = WorkAssignmentPlugin::WorkAssignmentGroup.create!(:name => 'Work Assignment Group', :profile => @organization, :start_date => Time.now, :end_date => Time.now + 2.day)
+    work_assignment = create_work_assignment('Work Assignment', @organization, nil, true)
+    work_assignment.parent = work_assignment_group
+    work_assignment.save
+
+    get :work_assignment_list, :profile => @organization.identifier, :work_assignment_group => work_assignment_group.id
+
+    assert_template :work_assignment_list
+    assert_match /#{work_assignment.name}/, @response.body
+  end
+
+  should 'find all work_assignment groups' do
+    profile = fast_create(Community)
+    profile.add_member(@person)
+
+    work_assignment_group = WorkAssignmentPlugin::WorkAssignmentGroup.create!(:name => 'Group', :profile => profile, :start_date => Time.now, :end_date => Time.now + 2.day)
+    work_assignment_group_test = WorkAssignmentPlugin::WorkAssignmentGroup.create!(:name => 'Group Test', :profile => profile, :start_date => Time.now, :end_date => Time.now + 2.day)
+    work_assignment = create_work_assignment('Work Assignment', profile, nil, true)
+    work_assignment.parent = work_assignment_group
+    work_assignment.save
+
+    get :work_assignment_group_list, :profile => @person.identifier
+
+    assert_match /#{work_assignment_group.profile.name}/, @response.body
+    assert_match /#{work_assignment_group_test.profile.name}/, @response.body
+    assert_match /#{work_assignment.name}/, @response.body
+  end
+
 end
