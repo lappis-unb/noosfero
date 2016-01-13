@@ -62,7 +62,7 @@ class WorkAssignmentPluginTest < ActiveSupport::TestCase
     author ||= fast_create(Person)
     organization = fast_create(Organization)
     organization.add_member(author)
-    work_assignment ||= WorkAssignmentPlugin::WorkAssignment.create!(:name => 'Work Assignment', :profile => organization)
+    work_assignment ||= WorkAssignmentPlugin::WorkAssignment.create!(:name => 'Work Assignment', :profile => organization, :show_to_followers => false)
     author_folder = work_assignment.find_or_create_author_folder(author)
     content = UploadedFile.create(
             {

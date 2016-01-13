@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative '../test_helper'
 require 'cms_controller'
 
 class CmsControllerTest < ActionController::TestCase
@@ -92,9 +92,4 @@ class CmsControllerTest < ActionController::TestCase
     assert_equal other_work_assignment.publish_submissions, submission.published
     assert_equal other_work_assignment.publish_submissions, submission.parent.published
   end
-
-  private
-    def create_work_assignment(name = nil, profile = nil, publish_submissions = nil, allow_visibility_edition = nil)
-      @work_assignment = WorkAssignmentPlugin::WorkAssignment.create!(:name => name, :profile => profile, :publish_submissions => publish_submissions, :allow_visibility_edition => allow_visibility_edition)
-    end
 end

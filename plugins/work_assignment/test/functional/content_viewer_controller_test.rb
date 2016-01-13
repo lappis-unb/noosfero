@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative '../test_helper'
 require 'content_viewer_controller'
 
 class ContentViewerControllerTest < ActionController::TestCase
@@ -32,6 +32,67 @@ class ContentViewerControllerTest < ActionController::TestCase
     WorkAssignmentPlugin.stubs(:can_download_submission?).returns(true)
 
     get :view_page, :profile => @organization.identifier, :page => submission.path
+    assert_response :success
+  end
+
+  should 'can\'t download if user is not in exception list ' do
+    @organization.add_member(@person) # current_user is a member
+    work_assignment = create_work_assignment('Another Work Assignment', @organization, nil, true)
+    parent = work_assignment.find_or_create_author_folder(@person)
+    create_uploaded_file('name_test', @organization, parent, @person, @person, true)
+    logout
+
+    other_person = create_user('other_user').person
+    @organization.add_member(other_person)
+    login_as :other_user
+
+    work_assignment.published = false
+    work_assignment.show_to_followers = false #Todos podem ver
+    work_assignment.save
+
+    assert_equal false, work_assignment.article_privacy_exceptions.include?(other_person)
+    get :view_page, :profile => @organization.identifier, :page => work_assignment.path
+    assert_response :forbidden
+    assert_template 'access_denied'
+  end
+
+  should 'can download if user is a member of community' do
+    @organization.add_member(@person) # current_user is a member
+    work_assignment = create_work_assignment('Another Work Assignment', @organization, nil, true)
+    parent = work_assignment.find_or_create_author_folder(@person)
+    create_uploaded_file('name_test', @organization, parent, @person, @person, true)
+    logout
+
+    other_person = create_user('other_user').person
+    @organization.add_member(other_person)
+    login_as :other_user
+
+    work_assignment.published = false
+    work_assignment.show_to_followers = true
+    work_assignment.save
+
+    get :view_page, :profile => @organization.identifier, :page => work_assignment.path
+    assert_response :success
+  end
+
+  should 'can download if user is in exception list ' do
+    @organization.add_member(@person) # current_user is a member
+    work_assignment = create_work_assignment('Another Work Assignment', @organization, nil, true)
+    parent = work_assignment.find_or_create_author_folder(@person)
+    create_uploaded_file('name_test', @organization, parent, @person, @person, true)
+    logout
+
+    other_person = create_user('other_user').person
+    @organization.add_member(other_person)
+    login_as :other_user
+
+    work_assignment.published = false
+    work_assignment.show_to_followers = false
+    work_assignment.article_privacy_exceptions = [other_person]
+    work_assignment.save
+
+    assert_equal true, work_assignment.article_privacy_exceptions.include?(other_person)
+    get :view_page, :profile => @organization.identifier, :page => work_assignment.path
     assert_response :success
   end
 

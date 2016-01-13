@@ -12,6 +12,7 @@ def edit_visibility
     unless params[:article].blank?
       folder.published = params[:article][:published]
       unless params[:q].nil?
+        folder.show_to_followers = params[:article][:show_to_followers]
         folder.article_privacy_exceptions = params[:q].split(/,/).map{|n| environment.people.find n.to_i}
       end
       folder.save!
