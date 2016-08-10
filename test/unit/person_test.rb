@@ -843,8 +843,8 @@ class PersonTest < ActiveSupport::TestCase
     p3 = fast_create(Person)
     p4 = fast_create(Person)
 
-    circle2 = Circle.create!(:person=> p2, :name => "Zombies", :profile_type => 'Person')
-    circle4 = Circle.create!(:person=> p4, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner => p2, :name => "Zombies", :profile_type => 'Person')
+    circle4 = Circle.create!(:owner => p4, :name => "Zombies", :profile_type => 'Person')
 
     p2.follow(p1, circle2)
     assert p2.follows?(p1)
@@ -889,8 +889,8 @@ class PersonTest < ActiveSupport::TestCase
     p3 = fast_create(Person)
     p4 = fast_create(Person)
 
-    circle2 = Circle.create!(:person=> p2, :name => "Zombies", :profile_type => 'Person')
-    circle4 = Circle.create!(:person=> p4, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner => p2, :name => "Zombies", :profile_type => 'Person')
+    circle4 = Circle.create!(:owner => p4, :name => "Zombies", :profile_type => 'Person')
     p2.follow(p1, circle2)
     assert p2.follows?(p1)
     refute p3.follows?(p1)
@@ -1640,11 +1640,6 @@ class PersonTest < ActiveSupport::TestCase
     assert person.can_change_homepage?
   end
 
-  should 'follow? return false when no profile is passed as parameter' do
-    person = Person.new
-    assert_equal false, person.follows?(nil)
-  end
-
   should 'allow posting content when has post_content permission' do
     person = create_user('person').person
     profile = mock
@@ -1957,53 +1952,4 @@ class PersonTest < ActiveSupport::TestCase
     person.user.expects(:save!).never
     person.save!
   end
-
-  should 'update profile circles for a person' do
-    person = create_user('testuser').person
-    community = fast_create(Community)
-    circle = Circle.create!(:person=> person, :name => "Zombies", :profile_type => 'Community')
-    circle2 = Circle.create!(:person=> person, :name => "Dota", :profile_type => 'Community')
-    circle3 = Circle.create!(:person=> person, :name => "Quadrado", :profile_type => 'Community')
-    person.follow(community, [circle, circle2])
-    person.update_profile_circles(community, [circle2, circle3])
-    assert_equivalent [circle2, circle3], ProfileFollower.with_profile(community).with_follower(person).map(&:circle)
-  end
-
-  should 'a person follow a profile' do
-    person = create_user('testuser').person
-    community = fast_create(Community)
-    circle = Circle.create!(:person=> person, :name => "Zombies", :profile_type => 'Community')
-    person.follow(community, circle)
-    assert_includes person.followed_profiles, community
-  end
-
-  should 'a person follow a profile with more than one circle' do
-    person = create_user('testuser').person
-    community = fast_create(Community)
-    circle = Circle.create!(:person=> person, :name => "Zombies", :profile_type => 'Community')
-    circle2 = Circle.create!(:person=> person, :name => "Dota", :profile_type => 'Community')
-    person.follow(community, [circle, circle2])
-    assert_includes person.followed_profiles, community
-    assert_equivalent [circle, circle2], ProfileFollower.with_profile(community).with_follower(person).map(&:circle)
-  end
-
-  should 'a person unfollow a profile' do
-    person = create_user('testuser').person
-    community = fast_create(Community)
-    circle = Circle.create!(:person=> person, :name => "Zombies", :profile_type => 'Community')
-    person.follow(community, circle)
-    person.unfollow(community)
-    assert_not_includes person.followed_profiles, community
-  end
-
-  should 'a person remove a profile from a circle' do
-    person = create_user('testuser').person
-    community = fast_create(Community)
-    circle = Circle.create!(:person=> person, :name => "Zombies", :profile_type => 'Community')
-    circle2 = Circle.create!(:person=> person, :name => "Dota", :profile_type => 'Community')
-    person.follow(community, [circle, circle2])
-    person.remove_profile_from_circle(community, circle)
-    assert_equivalent [circle2], ProfileFollower.with_profile(community).with_follower(person).map(&:circle)
-  end
-
 end

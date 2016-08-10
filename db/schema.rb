@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160705162914) do
+ActiveRecord::Schema.define(version: 20160829185118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -277,11 +277,13 @@ ActiveRecord::Schema.define(version: 20160705162914) do
 
   create_table "circles", force: :cascade do |t|
     t.string  "name"
-    t.integer "person_id"
-    t.string  "profile_type", null: false
+    t.integer "owner_id"
+    t.string  "profile_type",                    null: false
+    t.string  "owner_type",   default: "Person"
   end
 
-  add_index "circles", ["person_id", "name"], name: "circles_composite_key_index", unique: true, using: :btree
+  add_index "circles", ["owner_id", "name"], name: "circles_composite_key_index", unique: true, using: :btree
+  add_index "circles", ["owner_id", "owner_type"], name: "index_circles_on_owner_id_and_owner_type", using: :btree
 
   create_table "comments", force: :cascade do |t|
     t.string   "title"
@@ -439,7 +441,7 @@ ActiveRecord::Schema.define(version: 20160705162914) do
   add_index "external_feeds", ["enabled"], name: "index_external_feeds_on_enabled", using: :btree
   add_index "external_feeds", ["fetched_at"], name: "index_external_feeds_on_fetched_at", using: :btree
 
-  create_table "external_people", force: :cascade do |t|
+  create_table "external_profiles", force: :cascade do |t|
     t.string   "name"
     t.string   "identifier"
     t.string   "source"
@@ -448,6 +450,7 @@ ActiveRecord::Schema.define(version: 20160705162914) do
     t.boolean  "visible",        default: true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type",           default: "ExternalProfile"
   end
 
   create_table "favorite_enterprise_people", force: :cascade do |t|
@@ -686,9 +689,11 @@ ActiveRecord::Schema.define(version: 20160705162914) do
     t.integer  "circle_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "profile_type", default: "Person"
   end
 
   add_index "profiles_circles", ["profile_id", "circle_id"], name: "profiles_circles_composite_key_index", unique: true, using: :btree
+  add_index "profiles_circles", ["profile_id", "profile_type"], name: "index_profiles_circles_on_profile_id_and_profile_type", using: :btree
 
   create_table "qualifier_certifiers", force: :cascade do |t|
     t.integer "qualifier_id"

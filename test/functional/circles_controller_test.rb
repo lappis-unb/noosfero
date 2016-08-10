@@ -10,8 +10,8 @@ class CirclesControllerTest < ActionController::TestCase
   end
 
   should 'return all circles of a profile' do
-    circle1 = Circle.create!(:name => "circle1", :person => @person, :profile_type => 'Person')
-    circle2 = Circle.create!(:name => "circle2", :person => @person, :profile_type => 'Person')
+    circle1 = Circle.create!(:name => "circle1", :owner => @person, :profile_type => 'Person')
+    circle2 = Circle.create!(:name => "circle2", :owner => @person, :profile_type => 'Person')
     get :index, :profile => @person.identifier
 
     assert_equivalent [circle1, circle2], assigns[:circles]
@@ -24,7 +24,7 @@ class CirclesControllerTest < ActionController::TestCase
   end
 
   should 'create a new circle' do
-    assert_difference '@person.circles.count' do
+    assert_difference '@person.owned_circles.count' do
       post :create, :profile => @person.identifier,
                     :circle => { :name => 'circle' , :profile_type => Person.name}
     end
@@ -32,14 +32,14 @@ class CirclesControllerTest < ActionController::TestCase
   end
 
   should 'not create a circle without a name' do
-    assert_no_difference '@person.circles.count' do
+    assert_no_difference '@person.owned_circles.count' do
       post :create, :profile => @person.identifier, :circle => { :name => nil }
     end
     assert_template :new
   end
 
   should 'retrieve an existing circle when editing' do
-    circle = Circle.create!(:name => "circle", :person => @person, :profile_type => 'Person')
+    circle = Circle.create!(:name => "circle", :owner => @person, :profile_type => 'Person')
     get :edit, :profile => @person.identifier, :id => circle.id
     assert_equal circle.name, assigns[:circle].name
   end
@@ -50,7 +50,7 @@ class CirclesControllerTest < ActionController::TestCase
   end
 
   should 'update an existing circle' do
-    circle = Circle.create!(:name => "circle", :person => @person, :profile_type => 'Person')
+    circle = Circle.create!(:name => "circle", :owner => @person, :profile_type => 'Person')
     post :update, :profile => @person.identifier, :id => circle.id,
                   :circle => { :name => "new name" }
 
@@ -60,7 +60,7 @@ class CirclesControllerTest < ActionController::TestCase
   end
 
   should 'not update an existing circle without a name' do
-    circle = Circle.create!(:name => "circle", :person => @person, :profile_type => 'Person')
+    circle = Circle.create!(:name => "circle", :owner => @person, :profile_type => 'Person')
     post :update, :profile => @person.identifier, :id => circle.id,
                   :circle => { :name => nil }
 
@@ -75,18 +75,18 @@ class CirclesControllerTest < ActionController::TestCase
   end
 
   should 'destroy an existing circle and remove related profiles' do
-    circle = Circle.create!(:name => "circle", :person => @person, :profile_type => 'Person')
+    circle = Circle.create!(:name => "circle", :owner => @person, :profile_type => 'Person')
     fast_create(ProfileFollower, :profile_id => fast_create(Person).id, :circle_id => circle.id)
 
-    assert_difference ["@person.circles.count", 'ProfileFollower.count'], -1 do
+    assert_difference ["@person.owned_circles.count", 'ProfileFollower.count'], -1 do
       post :destroy, :profile => @person.identifier, :id => circle.id
     end
   end
 
   should 'not destroy an existing circle if action is not post' do
-    circle = Circle.create!(:name => "circle", :person => @person, :profile_type => 'Person')
+    circle = Circle.create!(:name => "circle", :owner => @person, :profile_type => 'Person')
 
-    assert_no_difference "@person.circles.count" do
+    assert_no_difference "@person.owned_circles.count" do
       get :destroy, :profile => @person.identifier, :id => circle.id
     end
     assert_response 404

@@ -267,9 +267,9 @@ class OrganizationTest < ActiveSupport::TestCase
     o.add_member(p3)
     assert p3.is_member_of?(o)
 
-    assert_equal true, o.send(:followed_by?,p1)
-    assert_equal true, o.send(:followed_by?,p3)
-    assert_equal false, o.send(:followed_by?,p2)
+    assert o.followed_by? p1
+    assert o.followed_by? p3
+    refute o.followed_by? p2
   end
 
   should "compose bare jabber id by identifier plus 'conference' and default hostname" do

@@ -773,7 +773,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'not see the followers activities in the current profile' do
-    circle = Circle.create!(:person=> profile, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> profile, :name => "Zombies", :profile_type => 'Person')
 
     p2 = create_user.person
     refute profile.follows?(p2)
@@ -969,7 +969,7 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(profile.identifier)
     p1= fast_create(Person)
 
-    circle = Circle.create!(:person=> profile, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> profile, :name => "Zombies", :profile_type => 'Person')
 
     profile.follow(p1, circle)
 
@@ -1993,7 +1993,7 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
 
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
 
     assert_difference 'ProfileFollower.count' do
       post :follow, :profile => person.identifier, :circles => {"Zombies" => circle.id}
@@ -2004,8 +2004,8 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
 
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    circle2 = Circle.create!(:person=> @profile, :name => "Brainsss", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> @profile, :name => "Brainsss", :profile_type => 'Person')
 
     assert_difference 'ProfileFollower.count', 2 do
       post :follow, :profile => person.identifier, :circles => {"Zombies" => circle.id, "Brainsss"=> circle2.id}
@@ -2016,8 +2016,8 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
 
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    circle2 = Circle.create!(:person=> @profile, :name => "Brainsss", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> @profile, :name => "Brainsss", :profile_type => 'Person')
 
     assert_no_difference 'ProfileFollower.count' do
       post :follow, :profile => person.identifier, :circles => {"Zombies" => "0", "Brainsss" => "0"}
@@ -2030,11 +2030,11 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
 
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle.id)
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    ProfileFollower.create(:profile => person, :circle => circle)
 
     assert_no_difference 'ProfileFollower.count' do
-      post :follow, :profile => person.identifier, :follow => { :circles => {"Zombies" => circle.id} }
+      post :follow, :profile => person.identifier, :circles => {"Zombies" => circle.id}
     end
     assert_response 400
   end
@@ -2050,8 +2050,8 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
 
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    follower = fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle.id)
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    follower = ProfileFollower.create!(:profile => person, circle: circle)
 
     assert_not_nil follower
 
@@ -2073,7 +2073,7 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
 
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle.id)
 
     post :unfollow, :profile => person.identifier, :redirect_to => "/some/url"
@@ -2082,8 +2082,8 @@ class ProfileControllerTest < ActionController::TestCase
 
   should "search followed people or circles" do
     login_as(@profile.identifier)
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
-    c2 = Circle.create!(:name => 'Work', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
+    c2 = Circle.create!(:name => 'Work', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     p3 = create_user('mary').person
@@ -2115,7 +2115,7 @@ class ProfileControllerTest < ActionController::TestCase
 
   should 'treat followed entries' do
     login_as(@profile.identifier)
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     p3 = create_user('mary').person
@@ -2132,7 +2132,7 @@ class ProfileControllerTest < ActionController::TestCase
 
   should 'return empty followed entries if the user is not on his wall' do
     login_as(@profile.identifier)
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     p3 = create_user('mary').person
@@ -2149,7 +2149,7 @@ class ProfileControllerTest < ActionController::TestCase
 
   should 'leave private scrap' do
     login_as(@profile.identifier)
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     ProfileFollower.create!(:profile => p1, :circle => c1)
@@ -2165,7 +2165,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'list private scraps on wall for marked people' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     ProfileFollower.create!(:profile => p1, :circle => c1)
     p1.add_friend(@profile)
@@ -2179,7 +2179,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'not list private scraps on wall for not marked people' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     not_marked = create_user('jack').person
@@ -2197,7 +2197,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'list private scraps on wall for creator' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     ProfileFollower.create!(:profile => p1, :circle => c1)
     scrap = Scrap.create!(:content => 'Secret message.', :sender_id => @profile.id, :receiver_id => @profile.id, :marked_people => [p1])
@@ -2210,7 +2210,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'list private scraps on wall for environment administrator' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     admin = create_user('env-admin').person
     env = @profile.environment
@@ -2227,7 +2227,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'list private scraps on network for marked people' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     p2.add_friend(p1)
@@ -2245,7 +2245,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'not list private scraps on network for not marked people' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     not_marked = create_user('jack').person
     not_marked.add_friend(p1)
@@ -2262,7 +2262,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'list private scraps on network for creator' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     p1.add_friend(@profile)
     ProfileFollower.create!(:profile => p1, :circle => c1)
@@ -2277,7 +2277,7 @@ class ProfileControllerTest < ActionController::TestCase
   end
 
   should 'list private scraps on network for environment admin' do
-    c1 = Circle.create!(:name => 'Family', :person => @profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => @profile, :profile_type => Person)
     p1 = create_user('emily').person
     admin = create_user('env-admin').person
     env = @profile.environment

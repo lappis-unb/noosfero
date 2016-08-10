@@ -31,9 +31,9 @@ class NotifyActivityToProfilesJobTest < ActiveSupport::TestCase
     refute NotifyActivityToProfilesJob::NOTIFY_ONLY_COMMUNITY.include?(action_tracker.verb)
     p1, p2, m1, m2 = fast_create(Person), fast_create(Person), fast_create(Person), fast_create(Person)
 
-    circle1 = Circle.create!(:person=> p1, :name => "Zombies", :profile_type => 'Person')
-    circle2 = Circle.create!(:person=> p2, :name => "Zombies", :profile_type => 'Person')
-    circle = Circle.create!(:person=> person, :name => "Zombies", :profile_type => 'Person')
+    circle1 = Circle.create!(:owner=> p1, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> p2, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> person, :name => "Zombies", :profile_type => 'Person')
 
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle1.id)
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle2.id)
@@ -54,7 +54,7 @@ class NotifyActivityToProfilesJobTest < ActiveSupport::TestCase
 
   should 'notify only marked people on marked scraps' do
     profile = create_user('scrap-creator').person
-    c1 = Circle.create!(:name => 'Family', :person => profile, :profile_type => Person)
+    c1 = Circle.create!(:name => 'Family', :owner => profile, :profile_type => Person)
     p1 = create_user('emily').person
     p2 = create_user('wollie').person
     not_marked = create_user('jack').person
@@ -100,7 +100,7 @@ class NotifyActivityToProfilesJobTest < ActiveSupport::TestCase
     refute NotifyActivityToProfilesJob::NOTIFY_ONLY_COMMUNITY.include?(action_tracker.verb)
     p1, p2, m1, m2 = fast_create(Person), fast_create(Person), fast_create(Person), fast_create(Person)
 
-    circle1 = Circle.create!(:person=> p1, :name => "Zombies", :profile_type => 'Person')
+    circle1 = Circle.create!(:owner=> p1, :name => "Zombies", :profile_type => 'Person')
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle1.id)
 
     fast_create(RoleAssignment, :accessor_id => m1.id, :role_id => 3, :resource_id => community.id)
@@ -148,8 +148,8 @@ class NotifyActivityToProfilesJobTest < ActiveSupport::TestCase
     refute NotifyActivityToProfilesJob::NOTIFY_ONLY_COMMUNITY.include?(action_tracker.verb)
     p1, p2, m1, m2 = fast_create(Person), fast_create(Person), fast_create(Person), fast_create(Person)
 
-    circle1 = Circle.create!(:person=> p1, :name => "Zombies", :profile_type => 'Person')
-    circle2 = Circle.create!(:person=> p2, :name => "Zombies", :profile_type => 'Person')
+    circle1 = Circle.create!(:owner=> p1, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> p2, :name => "Zombies", :profile_type => 'Person')
 
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle1.id)
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle2.id)

@@ -20,7 +20,7 @@ module ExternalUser
       if login && domain && environment.has_federated_network?(domain)
         external_environment = environment.external_environments.find_by_domain(domain)
         scheme = "http#{external_environment.uses_ssl? ? 's' : ''}"
-        url = URI.parse(scheme+"://"+ domain +'/.well-known/webfinger?resource=acct:'+
+p        url = URI.parse(scheme+"://"+ domain +'/.well-known/webfinger?resource=acct:'+
                          login+'@'+domain)
         http = build_request(url)
         req = Net::HTTP::Get.new(url.to_s)

@@ -4,17 +4,24 @@ class ProfileFollower < ApplicationRecord
 
   attr_accessible :profile, :circle
 
-  belongs_to :profile
+  #TODO -> user being followed
+  belongs_to :profile, :polymorphic => true
   belongs_to :circle
 
-  has_one :person, through: :circle
-  alias follower person
+  #TODO -> circle owner
+  # has_one :person, through: :circle, source_type: "ProfileFollower"
+
+  def circle_owner
+    self.circle.owner
+  end
+
+  alias follower circle_owner
 
   validates_presence_of :profile_id, :circle_id
   validates :profile_id, :uniqueness => {:scope => :circle_id, :message => "can't put a profile in the same circle twice"}
 
   scope :with_follower, -> person{
-    joins(:circle).where('circles.person_id = ?', person.id)
+    joins(:circle).where('circles.owner_id = ?', person.id)
   }
 
   scope :with_profile, -> profile{

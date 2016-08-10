@@ -3,7 +3,7 @@
   <div id="circles-checkboxes">
     <% circles.each do |circle| %>
       <div class="circle">
-        <%= labelled_check_box circle.name, "circles[#{circle.name}]", circle.id, followed_profile.in_circle?(circle, follower) %>
+        <%= labelled_check_box circle.name, "circles[#{circle.name}]", circle.id, followed_profile.in_circle?(circle) %>
       </div>
     <% end %>
   </div>

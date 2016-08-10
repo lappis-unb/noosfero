@@ -4,11 +4,11 @@ class FollowersController < MyProfileController
   before_action :accept_only_post, :only => [:update_category]
 
   def index
-    @followed_people = profile.followed_profiles.order(:type)
+    @followed_people = profile.followed_profiles.sort_by(&:type)
     @profile_types = {_('All profiles') => nil}.merge(Circle.profile_types).to_a
 
     if params['filter'].present?
-      @followed_people = @followed_people.where(:type => params['filter'])
+      @followed_people = @followed_people.select{|c| c.type == params['filter']}
       @active_filter = params['filter']
     end
 
@@ -17,7 +17,7 @@ class FollowersController < MyProfileController
 
   def set_category_modal
     followed_profile = Profile.find(params[:followed_profile_id])
-    circles = Circle.where(:person => profile, :profile_type => followed_profile.class.name)
+    circles = Circle.where(:owner => profile, :profile_type => followed_profile.class.name)
     render :partial => 'followers/edit_circles_modal', :locals => { :circles => circles, :followed_profile => followed_profile }
   end
 

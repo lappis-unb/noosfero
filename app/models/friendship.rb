@@ -12,7 +12,7 @@ class Friendship < ApplicationRecord
 
     circles = friendship.group.blank? ? ['friendships'] : friendship.group.split(',').map(&:strip)
     circles.each do |circle|
-      friendship.person.follow(friendship.friend, Circle.find_or_create_by(:person => friendship.person, :name => circle, :profile_type => 'Person'))
+      friendship.person.follow(friendship.friend, Circle.find_or_create_by(:owner => friendship.person, :name => circle, :profile_type => 'Person'))
     end
   end
 
@@ -22,7 +22,7 @@ class Friendship < ApplicationRecord
 
     groups = friendship.group.blank? ? ['friendships'] : friendship.group.split(',').map(&:strip)
     groups.each do |group|
-      circle = Circle.find_by(:person => friendship.person, :name => group )
+      circle = Circle.find_by(:owner => friendship.person, :name => group )
       friendship.person.remove_profile_from_circle(friendship.friend, circle) if circle
     end
   end

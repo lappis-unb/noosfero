@@ -9,8 +9,8 @@ class FollowersControllerTest < ActionController::TestCase
   should 'return followed people list' do
     login_as(@profile.identifier)
     person = fast_create(Person)
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle.id)
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    ProfileFollower.create(:profile => person, :circle => circle)
 
     get :index, :profile => @profile.identifier
     assert_includes assigns(:followed_people), person
@@ -20,10 +20,10 @@ class FollowersControllerTest < ActionController::TestCase
     login_as(@profile.identifier)
     person = fast_create(Person)
     community = fast_create(Community)
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    circle2 = Circle.create!(:person=> @profile, :name => "Teams", :profile_type => 'Community')
-    fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle.id)
-    fast_create(ProfileFollower, :profile_id => community.id, :circle_id => circle2.id)
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> @profile, :name => "Teams", :profile_type => 'Community')
+    ProfileFollower.create(:profile => person, :circle => circle)
+    ProfileFollower.create(:profile => community, :circle => circle2)
 
     get :index, :profile => @profile.identifier, :filter => "Community"
     assert_equal assigns(:followed_people), [community]
@@ -47,8 +47,8 @@ class FollowersControllerTest < ActionController::TestCase
   should 'update followed person category' do
     login_as(@profile.identifier)
     person = fast_create(Person)
-    circle = Circle.create!(:person=> @profile, :name => "Zombies", :profile_type => 'Person')
-    circle2 = Circle.create!(:person=> @profile, :name => "DotA", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> @profile, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> @profile, :name => "DotA", :profile_type => 'Person')
     fast_create(ProfileFollower, :profile_id => person.id, :circle_id => circle.id)
 
     post :update_category, :profile => @profile.identifier, :circles => {"DotA"=> circle2.id}, :followed_profile_id => person.id

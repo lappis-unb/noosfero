@@ -32,6 +32,8 @@ module NeedsProfile
         params.delete(:profile)
         redirect_to(Noosfero.url_options.merge(params).merge(:host => profile_hostname))
       end
+    elsif session[:external]
+      @profile = ExternalPerson.find(session[:external])
     else
       render_not_found
     end

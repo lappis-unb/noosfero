@@ -134,4 +134,30 @@ class ExternalPersonTest < ActiveSupport::TestCase
       assert_respond_to ExternalPerson.new, method.to_sym unless method =~ /^autosave_.*|validate_.*|^before_.*|^after_.*|^assignment_.*|^(city|state)_.*/
     end
   end
+
+  should 'raise error if method is not in Person or Profile' do
+    assert_raise NoMethodError do
+      ExternalPerson.new.send(:this_method_does_not_exist_right?)
+    end
+  end
+
+  should 'be able to follow people' do
+    person = fast_create(Person, :environment_id => Environment.default.id)
+    circle = Circle.create(owner: @external_person, profile_type: "Person", name: "FRIENDSSS")
+
+    assert_difference "@external_person.followed_profiles.count" do
+      @external_person.follow(person, circle)
+    end
+  end
+
+  should 'be able to unfolllow people' do
+    person = fast_create(Person, :environment_id => Environment.default.id)
+    circle = Circle.create(owner: @external_person, profile_type: "Person", name: "FRIENDSSS")
+    @external_person.follow(person, circle)
+
+    assert_difference "@external_person.followed_profiles.count", -1 do
+      @external_person.unfollow(person)
+    end
+  end
+
 end

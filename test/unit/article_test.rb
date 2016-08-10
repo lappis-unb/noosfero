@@ -1101,7 +1101,7 @@ class ArticleTest < ActiveSupport::TestCase
 
   should 'create notifications to followers when creating an article' do
     friend = fast_create(Person)
-    circle = Circle.create!(:person=> friend, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> friend, :name => "Zombies", :profile_type => 'Person')
     friend.follow(profile, circle)
     Article.destroy_all
     ActionTracker::Record.destroy_all
@@ -1115,7 +1115,7 @@ class ArticleTest < ActiveSupport::TestCase
 
   should 'create the notification to the follower when one follower has the notification and the other no' do
     f1 = fast_create(Person)
-    circle = Circle.create!(:person=> f1, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> f1, :name => "Zombies", :profile_type => 'Person')
     f1.follow(profile, circle)
 
     User.current = profile.user
@@ -1125,7 +1125,7 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal 2, ActionTrackerNotification.where(action_tracker_id: article.activity.id).count
 
     f2 = fast_create(Person)
-    circle2 = Circle.create!(:person=> f2, :name => "Zombies", :profile_type => 'Person')
+    circle2 = Circle.create!(:owner=> f2, :name => "Zombies", :profile_type => 'Person')
     f2.follow(profile, circle2)
 
     article2 = create TinyMceArticle, :name => 'Tracked Article 2', :profile_id => profile.id
@@ -1137,7 +1137,7 @@ class ArticleTest < ActiveSupport::TestCase
   should 'destroy activity and notifications of followers when destroying an article' do
     friend = fast_create(Person)
 
-    circle = Circle.create!(:person=> friend, :name => "Zombies", :profile_type => 'Person')
+    circle = Circle.create!(:owner=> friend, :name => "Zombies", :profile_type => 'Person')
 
     friend.follow(profile, circle)
 
