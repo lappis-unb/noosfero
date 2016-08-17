@@ -33,7 +33,6 @@ class OauthClientPluginPublicController < PublicController
     person = OauthClientPlugin::OauthExternalPerson.find_or_create_by(
         identifier: auth_data.info.nickname || user.login,
         name: auth_data.info.name,
-        created_at: Time.now,
         source: provider.site || auth_data.provider,
         email: user.email
     )

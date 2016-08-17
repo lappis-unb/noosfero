@@ -1,5 +1,7 @@
 class OauthClientPlugin::OauthExternalPerson < ExternalPerson
 
+  before_save :add_timestamp
+
   has_one :oauth_auth, as: :profile, class_name: 'OauthClientPlugin::Auth', dependent: :destroy
   has_one :oauth_provider, through: :oauth_auth, source: :provider
 
@@ -32,4 +34,9 @@ class OauthClientPlugin::OauthExternalPerson < ExternalPerson
       URI(@oauth_auth.image_url(size))
     end
   end
+
+  protected
+    def add_timestamp
+      self.created_at = Time.now
+    end
 end

@@ -1,7 +1,7 @@
 class OauthClientPluginAdminController < AdminController
 
   def index
-    @config = OauthClientPlugin::Config.instance
+    @config = OauthClientPlugin::Configuration.instance
   end
 
   def new
@@ -15,7 +15,7 @@ class OauthClientPluginAdminController < AdminController
   end
 
   def update_configs
-    OauthClientPlugin::Config.instance.update_attributes(params[:oauth_client_config])
+    OauthClientPlugin::Configuration.instance.update_attributes(params[:oauth_client_config])
     redirect_to :action => 'index'
   end
 
