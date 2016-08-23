@@ -16,7 +16,7 @@
       <%= expirable_button @page, :delete, content, url, options %>
     <% end %>
 
-    <% if @page.allow_spread?(user) && !remove_content_button(:spread, @page) %>
+    <% if @page.allow_spread?(user) && !remove_content_button(:spread, @page) && current_person.allow_action? %>
       <% url = profile.admin_url.merge({ :controller => 'cms', :action => 'publish', :id => @page.id }) %>
       <%= expirable_button @page, :spread, content_tag( 'span', _('Spread this') ), url, {:modal => true} if url %>
     <% end %>

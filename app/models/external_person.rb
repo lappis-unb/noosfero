@@ -285,6 +285,10 @@ class ExternalPerson < ActiveRecord::Base
     super
   end
 
+  def allow_action?
+    false
+  end
+
   private
 
   def generate_derivated_methods(methods)

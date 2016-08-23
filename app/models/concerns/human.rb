@@ -39,4 +39,7 @@ module Human
     self[:identifier] = value
   end
 
+  def allow_action?
+    true
+  end
 end
