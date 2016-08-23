@@ -24,6 +24,10 @@ class OauthClientPluginPublicController < PublicController
     redirect_to root_url
   end
 
+  def help
+    render :partial => 'auth/oauth_login_help'
+  end
+
   protected
 
   def external_person_login(auth_data)
