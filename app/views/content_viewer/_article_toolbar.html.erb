@@ -9,14 +9,14 @@
       <%= expirable_button @page, :edit, content, url %>
     <% end %>
 
-    <% if @page != profile.home_page && !@page.has_posts?  && @page.allow_delete?(user) && !remove_content_button(:delete, @page)%>
+    <% if @page != profile.home_page && !@page.has_posts? && @page.allow_delete?(user) && !remove_content_button(:delete, @page)%>
       <% content = content_tag( 'span', _('Delete') ) %>
       <% url = profile.admin_url.merge({ :controller => 'cms', :action => 'destroy', :id => @page.id}) %>
       <% options = {:method => :post, 'data-confirm' => delete_article_message(@page)} %>
       <%= expirable_button @page, :delete, content, url, options %>
     <% end %>
 
-    <% if @page.allow_spread?(user) && !remove_content_button(:spread, @page) && current_person.allow_action? %>
+    <% if @page.allow_spread?(user) && !remove_content_button(:spread, @page) && (current_person && current_person.allow_action?) %>
       <% url = profile.admin_url.merge({ :controller => 'cms', :action => 'publish', :id => @page.id }) %>
       <%= expirable_button @page, :spread, content_tag( 'span', _('Spread this') ), url, {:modal => true} if url %>
     <% end %>

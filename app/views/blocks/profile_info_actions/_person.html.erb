@@ -1,6 +1,6 @@
 <ul>
   <%if logged_in? && (user != profile) %>
-    <% if current_person.allow_action?  %>
+    <% if current_person && current_person.allow_action?  %>
       <% if !user.already_request_friendship?(profile) and !user.is_a_friend?(profile) %>
         <li>
           <%= button(:add, content_tag('span', _('Add friend')), profile.add_url, :class => 'add-friend', :title => _("Add friend"), :style => 'position: relative;') %>

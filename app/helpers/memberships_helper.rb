@@ -6,7 +6,7 @@ module MembershipsHelper
     if show_confirmation_modal? profile
       modal_button :add, _('Join this community'), url, class: 'join-community'
     else
-      if current_person.allow_action?
+      if current_person && current_person.allow_action?
         button :add, _('Join this community'), url, class: 'join-community'
       end
     end
