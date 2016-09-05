@@ -1,0 +1,8 @@
+<% extend CustomFieldsHelper %>
+<%= block_title(block.title, block.subtitle) %>
+<% block.fields_data.each do |key, value| %>
+  <p>
+    <%= value_for_format(value[:type], value[:content], key) %>
+  </p>
+<% end %>
+

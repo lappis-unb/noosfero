@@ -1,0 +1,16 @@
+<div class="profile-fields">
+  <div class="fields">
+    <span><p>Fields</p></span>
+    <% @block.available_fields.each do |field| %>
+      <p><%= labelled_check_box(_('%s') % field, "block[fields][#{field}]", "text", @block.show_field?(field.to_sym)) %></p>
+    <% end %>
+  </div>
+
+  <div class="custom-fields">
+    <span><p>Custom Fields</p></span>
+    <% @block.available_custom_fields.each do |field, format| %>
+      <p><%= labelled_check_box(_('%s') % field, "block[custom_fields][#{field}]", format, @block.show_field?(field.to_sym)) %></p>
+    <% end %>
+  </div>
+</div>
+
