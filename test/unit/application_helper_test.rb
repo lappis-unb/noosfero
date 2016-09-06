@@ -376,7 +376,7 @@ class ApplicationHelperTest < ActionView::TestCase
     profile.stubs(:active_fields).returns(['field'])
 
     expects(:profile_field_privacy_selector).with(profile, 'field').returns('')
-    assert_tag_in_string optional_field(profile, 'field', 'EDIT_FIELD'), :tag => 'div', :content => 'EDIT_FIELD', :attributes => {:class => 'field-with-privacy-selector'}
+    assert_tag_in_string optional_field(profile, 'field', 'EDIT_FIELD'), :tag => 'div', :content => 'EDIT_FIELD', :attributes => {:class => 'field-with-privacy-selector field'}
   end
 
   should 'not display active fields' do
@@ -983,6 +983,16 @@ class ApplicationHelperTest < ActionView::TestCase
     another_profile = fast_create(Community)
     task = create(SuggestArticle, :target => profile)
     assert_match /in.*#{profile.name}/, task_information(task, {:profile => another_profile.identifier})
+  end
+
+  should 'be able to create labelled check box with hidden option' do
+    content = labelled_check_box('Receive comments', 'comments', 'true', true)
+    assert_tag_in_string content, :tag => 'input', :attributes => {:type => 'hidden'}
+  end
+
+  should 'be able to create labelled check box without hidden option' do
+    content = labelled_check_box('Receive comments', 'comments', 'true', true, { :add_hidden => false })
+    assert_no_tag_in_string content, :tag => 'input', :attributes => {:type => 'hidden'}
   end
 
   protected

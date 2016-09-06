@@ -592,7 +592,7 @@ module ApplicationHelper
       end
     else
       if profile.active_fields.include?(name)
-        result = content_tag :div, class: 'field-with-privacy-selector' do
+        result = content_tag :div, class: "field-with-privacy-selector #{name}" do
           [field_html, profile_field_privacy_selector(profile, name)].safe_join
         end
       end

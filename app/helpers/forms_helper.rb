@@ -7,10 +7,11 @@ module FormsHelper
 
   def labelled_check_box( human_name, name, value = "1", checked = false, options = {} )
     options[:id] ||= 'checkbox-' + FormsHelper.next_id_number
-    html = options[:add_hidden] == false ? "" : hidden_field_tag(name, '0')
+    html = options[:add_hidden] == false ? "".html_safe : hidden_field_tag(name, '0')
 
-    html += check_box_tag( name, value, checked, options ) +
-         content_tag( 'label', human_name, :for => options[:id] )
+    html += check_box_tag( name, value, checked, options ).html_safe +
+         content_tag( 'label', human_name, :for => options[:id] ).html_safe
+    html
   end
 
   def labelled_text_field( human_name, name, value=nil, options={} )
