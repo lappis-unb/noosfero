@@ -40,11 +40,11 @@ module CustomFieldsHelper
     value_for_format custom_field_value.custom_field.format, custom_field_value.value
   end
 
-  def display_value_for_custom_field(custom_field, value)
-    value_for_format custom_field.format, value
+  def display_value_for_custom_field(custom_field, value, display_text=nil)
+    value_for_format custom_field.format, value, display_text
   end
 
-  def value_for_format format, value
+  def value_for_format(format, value, link_text=nil)
     case format
     when 'text', 'list', 'numeric', 'date', 'string'
       value
@@ -52,7 +52,11 @@ module CustomFieldsHelper
       value == "1" ? _('Yes') : _('No')
     when 'link'
       url = value[/\Ahttps?:\/\//i] ? value : "http://#{value}"
-      link_to(value, url, :target => '_blank')
+      if link_text
+        link_to(link_text, url, :target => '_blank')
+      else
+        link_to(value, url, :target => '_blank')
+      end
     end
 
   end

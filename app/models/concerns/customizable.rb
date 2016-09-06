@@ -71,7 +71,7 @@ module Customizable
     end
 
     def public_values
-      self.custom_field_values.select{|cv| cv.public}
+      self.custom_field_values.includes(:custom_field).select{|cv| cv.public}
     end
 
     def custom_value(field_name)
@@ -113,6 +113,19 @@ module Customizable
         return_list << custom_field_value
       end
       return_list
+    end
+
+    def custom_values_hash(include_private_fields=nil)
+      hash = {}
+      if include_private_fields
+        custom_fields_values = custom_field_values.includes(:custom_field)
+      else
+        custom_fields_values = public_values
+      end
+      custom_fields_values.each do |cfv|
+        hash[cfv.custom_field.name.to_sym] = cfv.value
+      end
+      hash
     end
 
     def save_custom_values
