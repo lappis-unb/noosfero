@@ -36,8 +36,8 @@ class MarkCommentAsReadPlugin < Noosfero::Plugin
   def article_extra_contents(article)
     proc do
       if user
-        ids = article.comments.marked_as_read(user).collect { |comment| comment.id}
-        "<script type=\"text/javascript\">mark_comments_as_read(#{ids.to_json});</script>" if !ids.empty?
+        ids = article.comments.marked_as_read_for(user).collect { |comment| comment.id}
+        "<script type=\"text/javascript\">mark_comments_as_read(#{ids.to_json});</script>".html_safe if !ids.empty?
       end
     end
   end
