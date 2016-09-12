@@ -229,6 +229,10 @@ class ProfileController < PublicController
   def leave_scrap
     sender = params[:sender_id].nil? ? current_user.person : Person.find(params[:sender_id])
     receiver = params[:receiver_id].nil? ? @profile : Person.find(params[:receiver_id])
+
+    # prevent non friends or members from creating a scrap by POST
+    return render_access_denied unless receiver.can_leave_scrap? sender
+
     @scrap = Scrap.new(params[:scrap])
     @scrap.sender= sender
     @scrap.receiver= receiver
