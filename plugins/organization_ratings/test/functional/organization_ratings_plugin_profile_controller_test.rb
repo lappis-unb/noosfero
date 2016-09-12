@@ -21,9 +21,22 @@ class OrganizationRatingsPluginProfileControllerTest < ActionController::TestCas
     login_as(@person.identifier)
     @controller.stubs(:logged_in?).returns(true)
     @controller.stubs(:current_user).returns(@person.user)
+    @external_person = ExternalPerson.create!(identifier: 'externalze',
+                                              name: 'External Ze',
+                                              source: 'anerenvironment.org',
+                                              email: 'external@ze.org',
+                                              created_at: Date.yesterday
+                                             )
   end
 
   test "should add new comment to community" do
+    post :new_rating, profile: @community.identifier, :comments => {:body => "This is a test"}, :organization_rating_value => 4
+    assert_equal "#{@community.name} successfully rated!", session[:notice]
+  end
+
+  test "should add new comment to community with External Person" do
+    logout
+    session[:external] = @external_person.id
     post :new_rating, profile: @community.identifier, :comments => {:body => "This is a test"}, :organization_rating_value => 4
     assert_equal "#{@community.name} successfully rated!", session[:notice]
   end
@@ -183,6 +196,23 @@ class OrganizationRatingsPluginProfileControllerTest < ActionController::TestCas
   end
 
   test "not display moderation report message to regular user" do
+    post :new_rating, profile: @community.identifier, :comments => {:body => "comment"}, :organization_rating_value => 3
+    rating_task = CreateOrganizationRatingComment.last
+    rating_task.cancel
+
+    @member = create_user('member')
+    @community.add_member @member.person
+    login_as 'member'
+    @controller.stubs(:current_user).returns(@member)
+
+    get :new_rating, profile: @community.identifier
+    assert_no_tag :tag => 'p', :content => /Report waiting for approval/, :attributes => {:class =>/moderation-msg/}
+    assert_no_tag :tag => 'p', :attributes => {:class =>/comment-body/}
+  end
+
+  test "not display moderation report message to External Person user" do
+    logout
+    session[:external] = @external_person.id
     post :new_rating, profile: @community.identifier, :comments => {:body => "comment"}, :organization_rating_value => 3
     rating_task = CreateOrganizationRatingComment.last
     rating_task.cancel

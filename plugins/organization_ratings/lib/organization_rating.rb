@@ -1,5 +1,5 @@
 class OrganizationRating < ApplicationRecord
-  belongs_to :person
+  belongs_to :person, :polymorphic => true
   belongs_to :organization
   belongs_to :comment
 

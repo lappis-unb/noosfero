@@ -8,16 +8,6 @@ class TaskTest < ActiveSupport::TestCase
     ActionMailer::Base.deliveries = []
   end
 
-  def test_relationship_with_requestor
-    t = Task.create
-    assert_raise ActiveRecord::AssociationTypeMismatch do
-      t.requestor = 1
-    end
-    assert_nothing_raised do
-      t.requestor = Profile.new
-    end
-  end
-
   should 'target be able to polymorphic relationship' do
     t = Task.create
     assert_nothing_raised do
@@ -25,6 +15,16 @@ class TaskTest < ActiveSupport::TestCase
     end
     assert_nothing_raised do
       t.target = Profile.new
+    end
+  end
+
+  should 'requestor be able to polymorphic relationship' do
+    t = Task.create
+    assert_nothing_raised do
+      t.requestor = Profile.new
+    end
+    assert_nothing_raised do
+      t.requestor = ExternalPerson.new
     end
   end
 
