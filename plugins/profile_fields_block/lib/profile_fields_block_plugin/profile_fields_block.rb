@@ -2,9 +2,10 @@ class ProfileFieldsBlockPlugin::ProfileFieldsBlock < Block
 
   settings_items :fields, type: Hash, :default => {}
   settings_items :custom_fields, type: Hash, :default => {}
+  settings_items :show_profile_image, type: :boolean, :default => false
+  settings_items :show_profile_name, type: :boolean, :default => false
 
-  attr_accessible :fields
-  attr_accessible :custom_fields
+  attr_accessible :fields, :custom_fields, :show_profile_image, :show_profile_name
 
   before_save :clean_unchecked_fields
   before_save :symbolize_fields
@@ -18,11 +19,11 @@ class ProfileFieldsBlockPlugin::ProfileFieldsBlock < Block
   end
 
   def self.pretty_name
-    _('Profile Fields Block')
+     _('Profile Fields Block')
   end
 
   def help
-    _('This blocks displays profile public fields.')
+     _('This blocks displays profile public fields.')
   end
 
   def api_content

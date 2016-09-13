@@ -1,7 +1,17 @@
 <% extend CustomFieldsHelper %>
 <%= block_title(block.title, block.subtitle) %>
+<% if block.show_profile_name %>
+  <p class="name-content"><%= block.owner.name %></p>
+<% end %>
+
+<% if block.show_profile_image %>
+  <p class="image-content">
+    <%= link_to profile_image(block.owner, :big) +"\n", profile.url %>
+  </p>
+<% end %>
+
 <% block.fields_data.each do |key, value| %>
-  <p>
+  <p class="<%= "#{key}-content" %>"
     <%= value_for_format(value[:type], value[:content], key) %>
   </p>
 <% end %>

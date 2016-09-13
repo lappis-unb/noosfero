@@ -1,13 +1,20 @@
-<div class="profile-fields">
+<div>
+  <div>
+    <p><%= ('Default Public Fields') %></p>
+    <p><%= labelled_check_box(_('profile image'), "block[show_profile_image]", "true", @block.show_profile_image) %></p>
+    <p><%= labelled_check_box(_('profile name'), "block[show_profile_name]", "true", @block.show_profile_name) %></p>
+  </div>
   <div class="fields">
-    <span><p>Fields</p></span>
+    <p><%= _('Public Fields') %></p>
+    <p class="no-public-fields-msg"><%= @block.available_fields.empty? ? _('No fields to display') : ''  %></p>
     <% @block.available_fields.each do |field| %>
       <p><%= labelled_check_box(_('%s') % field, "block[fields][#{field}]", "text", @block.show_field?(field.to_sym)) %></p>
     <% end %>
   </div>
 
   <div class="custom-fields">
-    <span><p>Custom Fields</p></span>
+    <p><%= ('Public Custom Fields') %></p>
+    <p class="no-public-fields-msg"><%= @block.available_custom_fields.empty? ? _('No public fields to display') : ''  %></p>
     <% @block.available_custom_fields.each do |field, format| %>
       <p><%= labelled_check_box(_('%s') % field, "block[custom_fields][#{field}]", format, @block.show_field?(field.to_sym)) %></p>
     <% end %>
