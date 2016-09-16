@@ -124,14 +124,14 @@ module ArticleHelper
 
     check_box(
       :article,
-      :show_to_followers,
+      :show_to_members_and_friends,
       {:class => "custom_privacy_option"}
     ) +
     content_tag(
       'label',
       label_message,
-      :for => 'article_show_to_followers',
-      :id => 'label_show_to_followers'
+      :for => 'article_show_to_members_and_friends',
+      :id => 'label_show_to_members_and_friends'
     ) +
     (article.profile.community? ?
       content_tag(

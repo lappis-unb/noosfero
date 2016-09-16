@@ -16,7 +16,7 @@ class Article < ApplicationRecord
                   :accept_comments, :feed, :published, :source, :source_name,
                   :highlighted, :notify_comments, :display_hits, :slug,
                   :external_feed_builder, :display_versions, :external_link,
-                  :image_builder, :show_to_followers, :archived,
+                  :image_builder, :show_to_members_and_friends, :archived,
                   :author, :display_preview, :published_at, :person_followers, :editor
 
   extend ActsAsHavingImage::ClassMethods
@@ -539,7 +539,7 @@ class Article < ApplicationRecord
     where(
       [
        "published = ? OR last_changed_by_id = ? OR profile_id = ? OR ?
-        OR  (show_to_followers = ? AND ? AND profile_id IN (?))", true, user.id, user.id,
+        OR  (show_to_members_and_friends = ? AND ? AND profile_id IN (?))", true, user.id, user.id,
         profile.nil? ?  false : user.has_permission?(:view_private_content, profile),
         true, (profile.nil? ? true : profile.in_social_circle?(user)),  ( profile.nil? ? (user.friends.select('profiles.id')) : [profile.id])
       ]
@@ -548,10 +548,13 @@ class Article < ApplicationRecord
 
 
   def display_unpublished_article_to?(user)
-    user == author || allow_view_private_content?(user) || user == profile ||
-    user.is_admin?(profile.environment) || user.is_admin?(profile) ||
+    user == author ||
+    allow_view_private_content?(user) ||
+    user == profile ||
+    user.is_admin?(profile.environment) ||
+    user.is_admin?(profile) ||
     article_privacy_exceptions.include?(user) ||
-    (self.show_to_followers && user.follows?(profile))
+    (self.show_to_members_and_friends && profile.has_relation?(user))
   end
 
   def display_to?(user = nil)

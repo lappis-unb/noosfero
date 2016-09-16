@@ -549,6 +549,13 @@ class Profile < ApplicationRecord
     environment && environment.trusted_sites_for_iframe
   end
 
+  # verify if the profile has a relation(membership or friendship) with the given person
+  #
+  # Subclasse should override this method
+  def has_relation? person
+    raise NotImplementedError
+  end
+
   # returns the contact email for this profile.
   #
   # Subclasses may -- and should -- override this method.

@@ -147,7 +147,7 @@ class CmsController < MyProfileController
     if parent
       @article.parent = parent
       @article.published = parent.published
-      @article.show_to_followers = parent.show_to_followers
+      @article.show_to_members_and_friends = parent.show_to_members_and_friends
       @parent_id = parent.id
     end
 

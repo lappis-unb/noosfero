@@ -236,4 +236,9 @@ class Organization < Profile
   def display_private_info_to?(user)
     (public_profile && visible && !secret) || super
   end
+
+  def has_relation? person
+    raise TypeError, "Expected a Person instance" unless person.kind_of? Person
+    self.members.include? person
+  end
 end

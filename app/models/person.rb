@@ -632,4 +632,8 @@ class Person < Profile
     available_editors
   end
 
+  def has_relation? person
+    raise TypeError, "Expected a Person instance" unless person.kind_of? Person
+    self.friends.include? person
+  end
 end
