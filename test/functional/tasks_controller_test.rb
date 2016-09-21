@@ -716,7 +716,9 @@ class TasksControllerTest < ActionController::TestCase
 
     get :index
 
-    assert_tag :tag=> 'div', :attributes => { :class => 'field-name' }, :content => /great_field: new_value!/
+    assert_tag :tag=> 'div', :attributes => { :class => 'field-name' },
+      :descendant => { :tag => 'strong', :content => /great_field/},
+      :content => /new_value!/
   end
 
   should 'list custom field details in moderation of community creation tasks when moderation_tasks is true' do
