@@ -39,6 +39,12 @@ class ProfileTest < ActiveSupport::TestCase
     assert p.domains.empty?
   end
 
+  should 'not implement has_relation?(person)' do
+    assert_raise NotImplementedError do
+      Profile.new.has_relation? nil
+    end
+  end
+
   should 'be assigned to default environment if no environment is informed' do
     assert_equal Environment.default, create(Profile).environment
   end
@@ -2240,5 +2246,20 @@ class ProfileTest < ActiveSupport::TestCase
     assert_raise RuntimeError do
       c.add_member(p)
     end
+  end
+
+  should "verify if a given person can leave a scrap" do
+    c = fast_create(Community, :name=>"sample community")
+    p1 = fast_create(Person, :name=>"sample person 1")
+    p2 = fast_create(Person, :name=>"sample person 2")
+
+    c.add_member p1 # member can leave scrap
+    p1.add_friend p2 # friends can leave scrap
+
+    assert_equal true, c.can_leave_scrap?(p1)
+    assert_equal false, c.can_leave_scrap?(p2)
+
+    assert_equal true, p1.can_leave_scrap?(p2)
+    assert_equal true, p1.can_leave_scrap?(p1) # I person can leave a scrap in its own wall
   end
 end

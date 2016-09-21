@@ -2039,4 +2039,14 @@ class PersonTest < ActiveSupport::TestCase
     assert person.save
   end
 
+  should 'tell if a given person has a friendship relation' do
+    p1 = create_user('testuser-1').person
+    p2 = create_user('testuser-2').person
+
+    assert_equal false, p1.has_relation?(p2)
+
+    p1.add_friend(p2)
+
+    assert_equal true, p1.has_relation?(p2)
+  end
 end

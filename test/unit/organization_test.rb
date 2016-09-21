@@ -587,4 +587,15 @@ class OrganizationTest < ActiveSupport::TestCase
     organization = fast_create(Organization, public_profile: false)
     assert !organization.display_private_info_to?(nil)
   end
+
+  should 'tell if a given person has a membership relation' do
+    organization = fast_create(Organization, public_profile: true, visible: true)
+    person = create_user('testuser').person
+
+    assert_equal false, organization.has_relation?(person)
+
+    organization.add_member(person)
+
+    assert_equal true, organization.has_relation?(person)
+  end
 end

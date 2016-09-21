@@ -648,12 +648,43 @@ class ProfileControllerTest < ActionController::TestCase
     count = Scrap.count
     another_person = create_user.person
     assert another_person.scraps_received.empty?
+    profile.add_friend(another_person)
+    another_person.add_friend(profile)
     post :leave_scrap, :profile => another_person.identifier, :scrap => {:content => 'something'}
     assert_equal count + 1, Scrap.count
     assert_response :success
     assert_equal "Message successfully sent.", assigns(:message)
     another_person.reload
     refute another_person.scraps_received.empty?
+  end
+
+  should "not leave a scrap if current user is not a friend" do
+    login_as(profile.identifier)
+
+    another_person = create_user.person
+    post :leave_scrap, :profile => another_person.identifier, :scrap => {:content => 'something'}
+    assert_template 'shared/access_denied'
+    assert_equal 0, another_person.scraps.count
+
+    profile.add_friend(another_person)
+    another_person.add_friend(profile)
+    post :leave_scrap, :profile => another_person.identifier, :scrap => {:content => 'something'}
+
+    assert_equal 1, another_person.scraps.count
+  end
+
+  should "not leave a scrap if current user is not a community member" do
+    login_as(profile.identifier)
+
+    community = fast_create Community, :name=>"sample community"
+    post :leave_scrap, :profile => community.identifier, :scrap => {:content => 'something'}
+    assert_template 'shared/access_denied'
+    assert_equal 0, community.scraps.count
+
+    community.add_member(profile)
+    post :leave_scrap, :profile => community.identifier, :scrap => {:content => 'something'}
+
+    assert_equal 1, community.scraps.count
   end
 
   should "the owner of scrap could remove it" do
@@ -705,6 +736,8 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(profile.identifier)
     count = Scrap.count
     another_person = create_user.person
+    profile.add_friend another_person
+    another_person.add_friend profile
     post :leave_scrap, :profile => another_person.identifier, :scrap => {:content => 'something'}
     last = Scrap.last
     assert_equal profile, last.sender
@@ -714,6 +747,8 @@ class ProfileControllerTest < ActionController::TestCase
     login_as(profile.identifier)
     count = Scrap.count
     another_person = create_user.person
+    profile.add_friend another_person
+    another_person.add_friend profile
     post :leave_scrap, :profile => another_person.identifier, :scrap => {:content => 'something'}
     last = Scrap.last
     assert_equal another_person, last.receiver
