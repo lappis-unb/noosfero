@@ -1,7 +1,7 @@
 <% task.requestor.custom_field_values.each do |custom_value| %>
   <% if custom_value.custom_field.moderation_task %>
     <div class="field-name">
-      <%= custom_value.custom_field.name + ": " + display_custom_field_value(custom_value) %>
+      <strong><%= custom_value.custom_field.name %>: </strong><%= truncate(display_custom_field_value(custom_value), length: 140) %>
     </div>
   <% end %>
 <% end %>

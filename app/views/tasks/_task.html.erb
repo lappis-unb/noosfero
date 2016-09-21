@@ -52,7 +52,7 @@
 
   <%= fields_for "tasks[#{task.id}][task]", task do |f| %>
     <% if task.custom_fields_moderate %>
-      <div id="custom-field-information-<%=task.id%>" style="display: none">
+      <div id="custom-field-information-<%=task.id%>">
         <%= render :partial => task.class.name.underscore+'_custom_fields', :locals => {:task => task} %>
       </div>
     <% end %>
