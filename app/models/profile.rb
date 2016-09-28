@@ -69,19 +69,6 @@ class Profile < ApplicationRecord
     end
   end
 
-  def can_leave_scrap? person
-    return true if person.kind_of?(Person) and self == person
-
-    case self.type
-    when "Person"
-      self.friends.include? person
-    when "Community"
-      self.members.include? person
-    else
-      false
-    end
-  end
-
   PERMISSIONS['Profile'] = {
     'edit_profile'         => N_('Edit profile'),
     'destroy_profile'      => N_('Destroy profile'),
