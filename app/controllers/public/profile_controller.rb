@@ -231,7 +231,9 @@ class ProfileController < PublicController
     receiver = params[:receiver_id].nil? ? @profile : Person.find(params[:receiver_id])
 
     # prevent non friends or members from creating a scrap by POST
-    return render_access_denied unless receiver.has_relation?(sender)
+    if (sender != receiver) and (not receiver.has_relation?(sender))
+      return render_access_denied
+    end
 
     @scrap = Scrap.new(params[:scrap])
     @scrap.sender= sender
