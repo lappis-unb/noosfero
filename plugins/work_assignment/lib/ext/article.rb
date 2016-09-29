@@ -17,7 +17,7 @@ class Article
       related_work_assignment = self.parent.parent
 
       if(!related_work_assignment.publish_submissions)
-        self.show_to_followers = false
+        self.article_show_to_members_and_friends = false
       end
 
       self.published = self.parent.published

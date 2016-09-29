@@ -67,7 +67,7 @@ class CmsControllerTest < ActionController::TestCase
     assert_equal other_work_assignment.publish_submissions, submission.parent.published
   end
 
-  should 'submission inherit Work Assignment "published" attribute and not be set as show_to_followers when it is not public' do
+  should 'submission inherit Work Assignment "published" attribute and not be set as article_show_to_members_and_friends when it is not public' do
     @organization.add_member(@person)
     work_assignment = create_work_assignment('Work Assignment', @organization, false, nil)
 
@@ -76,7 +76,7 @@ class CmsControllerTest < ActionController::TestCase
     post :upload_files, :profile => @organization.identifier, :parent_id => work_assignment.id, :uploaded_files => [fixture_file_upload('/files/test.txt', 'text/plain')]
     submission = UploadedFile.last
 
-    assert !submission.show_to_followers?
+    assert !submission.article_show_to_members_and_friends?
     assert_equal work_assignment.publish_submissions, submission.published
     assert_equal work_assignment.publish_submissions, submission.parent.published
 
@@ -87,7 +87,7 @@ class CmsControllerTest < ActionController::TestCase
     post :upload_files, :profile => @organization.identifier, :parent_id => other_work_assignment.id, :uploaded_files => [fixture_file_upload('/files/test.txt', 'text/plain')]
     submission = UploadedFile.last
 
-    assert submission.show_to_followers?
+    assert submission.article_show_to_members_and_friends?
     assert_equal other_work_assignment.publish_submissions, submission.published
     assert_equal other_work_assignment.publish_submissions, submission.parent.published
   end

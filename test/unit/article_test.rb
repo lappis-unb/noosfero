@@ -478,7 +478,7 @@ class ArticleTest < ActiveSupport::TestCase
   end
 
   should 'say that member user can not see private article' do
-    article = fast_create(Article, :name => 'test article', :profile_id => profile.id, :published => false, :show_to_followers => false)
+    article = fast_create(Article, :name => 'test article', :profile_id => profile.id, :published => false, :show_to_members_and_friends => false)
     person = create_user('test_user').person
     profile.affiliate(person, Profile::Roles.member(profile.environment.id))
 
@@ -533,7 +533,7 @@ class ArticleTest < ActiveSupport::TestCase
 
   should 'not allow friends of private person see the article' do
     person = create_user('test_user').person
-    article = create(Article, :name => 'test article', :profile => person, :published => false, :show_to_followers => false)
+    article = create(Article, :name => 'test article', :profile => person, :published => false, :show_to_members_and_friends => false)
     friend = create_user('test_friend').person
     person.add_friend(friend)
     person.save!
@@ -1929,9 +1929,9 @@ class ArticleTest < ActiveSupport::TestCase
     p.add_friend(user)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => false, :show_to_followers => true, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
+    a = fast_create(Article, :published => false, :show_to_members_and_friends => true, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, p)
   end
 
@@ -1941,9 +1941,9 @@ class ArticleTest < ActiveSupport::TestCase
     user.add_friend(p)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => false, :show_to_followers => true, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
+    a = fast_create(Article, :published => false, :show_to_members_and_friends => true, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, nil)
   end
 
@@ -1954,9 +1954,9 @@ class ArticleTest < ActiveSupport::TestCase
     p.add_member(user)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => false, :show_to_followers => true, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
+    a = fast_create(Article, :published => false, :show_to_members_and_friends => true, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, p)
   end
 
@@ -1966,7 +1966,7 @@ class ArticleTest < ActiveSupport::TestCase
     refute p.is_a_friend?(user)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => false, :show_to_followers => true, :profile_id => p.id)
+    a = fast_create(Article, :published => false, :show_to_members_and_friends => true, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     assert_equal [], Article.display_filter(user, p)
@@ -1978,7 +1978,7 @@ class ArticleTest < ActiveSupport::TestCase
     refute user.is_member_of?(p)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => false, :show_to_followers => true, :profile_id => p.id)
+    a = fast_create(Article, :published => false, :show_to_members_and_friends => true, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     assert_equal [], Article.display_filter(user, p)
@@ -1990,7 +1990,7 @@ class ArticleTest < ActiveSupport::TestCase
     refute user.is_member_of?(p)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => true, :show_to_followers => true, :profile_id => p.id)
+    a = fast_create(Article, :published => true, :show_to_members_and_friends => true, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, p)
@@ -2002,7 +2002,7 @@ class ArticleTest < ActiveSupport::TestCase
     refute user.is_a_friend?(p)
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
-    a = fast_create(Article, :published => true, :show_to_followers => true, :profile_id => p.id)
+    a = fast_create(Article, :published => true, :show_to_members_and_friends => true, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     fast_create(Article, :published => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, p)
@@ -2056,8 +2056,8 @@ class ArticleTest < ActiveSupport::TestCase
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
     a = fast_create(Article, :published => true, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, p)
   end
 
@@ -2098,8 +2098,8 @@ class ArticleTest < ActiveSupport::TestCase
     user.stubs(:has_permission?).with(:view_private_content, p).returns(false)
     Article.delete_all
     a = fast_create(Article, :published => true, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
-    fast_create(Article, :published => false, :show_to_followers => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
+    fast_create(Article, :published => false, :show_to_members_and_friends => false, :profile_id => p.id)
     assert_equal [a], Article.display_filter(user, p)
   end
 

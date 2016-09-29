@@ -182,7 +182,7 @@ class ContentViewerControllerTest < ActionController::TestCase
     admin = fast_create(Person)
     community.add_member(admin)
 
-    folder = fast_create(Folder, :profile_id => community.id, :published => false, :show_to_followers => false)
+    folder = fast_create(Folder, :profile_id => community.id, :published => false, :show_to_members_and_friends => false)
     community.add_member(profile)
     login_as(profile.identifier)
 
@@ -284,7 +284,7 @@ class ContentViewerControllerTest < ActionController::TestCase
   should 'not give access to private articles if logged in and only member' do
     person = create_user('test_user').person
     profile = Profile.create!(:name => 'test profile', :identifier => 'test_profile')
-    intranet = Folder.create!(:name => 'my_intranet', :profile => profile, :published => false, :show_to_followers => false)
+    intranet = Folder.create!(:name => 'my_intranet', :profile => profile, :published => false, :show_to_members_and_friends => false)
     profile.affiliate(person, Profile::Roles.member(profile.environment.id))
     login_as('test_user')
 
@@ -1463,7 +1463,7 @@ class ContentViewerControllerTest < ActionController::TestCase
                                     :body => 'This article should be shared with all social networks',
                                     :profile => community,
                                     :published => false,
-                                    :show_to_followers => true)
+                                    :show_to_members_and_friends => true)
     article.parent = blog
     article.save!
 
@@ -1476,7 +1476,7 @@ class ContentViewerControllerTest < ActionController::TestCase
     assert_response :success
     assert_tag :tag => 'h1', :attributes => { :class => /title/ }, :content => article.name
 
-    article.show_to_followers = false
+    article.show_to_members_and_friends = false
     article.save!
 
     get :view_page, :profile => community.identifier, "page" => 'blog'
@@ -1592,7 +1592,7 @@ class ContentViewerControllerTest < ActionController::TestCase
                                     :profile => @profile,
                                     :published => false,
                                     :abstract => "teste teste teste",
-                                    :show_to_followers => true,
+                                    :show_to_members_and_friends => true,
                                     :image_builder => { :uploaded_data => fixture_file_upload('/files/rails.png', 'image/png')} )
     article.parent = blog
     article.save!

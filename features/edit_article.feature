@@ -42,7 +42,7 @@ Feature: edit article
     When I follow "Folder"
     And I fill in "Title" with "My Folder"
     And I choose "article_published_false"
-    And I uncheck "article_show_to_followers"
+    And I uncheck "article_show_to_members_and_friends"
     And I press "Save"
     And I log off
     And I go to /freesoftware/my-folder
@@ -67,7 +67,7 @@ Feature: edit article
     When I follow "Folder"
     And I fill in "Title" with "My Folder"
     And I choose "article_published_false"
-    And I check "article_show_to_followers"
+    And I check "article_show_to_members_and_friends"
     Then I should not see "Fill in the search"
 
   @selenium
@@ -89,7 +89,7 @@ Feature: edit article
     When I follow "Folder"
     And I fill in "Title" with "My Folder"
     And I choose "article_published_false"
-    And I uncheck "article_show_to_followers"
+    And I uncheck "article_show_to_members_and_friends"
     Then I should see "Allow only community members entered below to view this content"
 
   @selenium

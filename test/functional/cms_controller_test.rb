@@ -67,15 +67,15 @@ class CmsControllerTest < ActionController::TestCase
     get :new, :profile => profile.identifier, :type => 'TextArticle', :parent_id => p1.id
     assert_equal assigns(:article).published, p1.published
 
-    p2 = fast_create(Folder, :published => false, :show_to_followers => true, :profile_id => profile.id)
+    p2 = fast_create(Folder, :published => false, :show_to_members_and_friends => true, :profile_id => profile.id)
     get :new, :profile => profile.identifier, :type => 'TextArticle', :parent_id => p2.id
     assert_equal assigns(:article).published, p2.published
-    assert_equal assigns(:article).show_to_followers, p2.show_to_followers
+    assert_equal assigns(:article).show_to_members_and_friends, p2.show_to_members_and_friends
 
-    p3 = fast_create(Folder, :published => false, :show_to_followers => false, :profile_id => profile.id)
+    p3 = fast_create(Folder, :published => false, :show_to_members_and_friends => false, :profile_id => profile.id)
     get :new, :profile => profile.identifier, :type => 'TextArticle', :parent_id => p3.id
     assert_equal assigns(:article).published, p3.published
-    assert_equal assigns(:article).show_to_followers, p3.show_to_followers
+    assert_equal assigns(:article).show_to_members_and_friends, p3.show_to_members_and_friends
   end
 
   should 'be able to save a document' do
