@@ -5,9 +5,7 @@
 <% end %>
 
 <div id='uploaded_files'>
-  <% 3.times do %>
-    <%= render :partial => 'upload_file', :locals => {:size => size} %>
-  <% end %>
+  <%= render :partial => 'upload_file', :locals => {:size => size} %>
 </div>
 
 <%= hidden_field_tag('back_to', @back_to) %>
