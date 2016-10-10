@@ -21,11 +21,23 @@ module BlockHelper
       <td>#{text_field_tag 'block[images][][address]', image[:address], :class => 'highlight-address', :size => 20}</td>
       <td>#{text_field_tag 'block[images][][position]', image[:position], :class => 'highlight-position', :size => 1}</td>
       <td>#{check_box_tag 'block[images][][new_window]', '1', image[:new_window], :class => 'highlight-new_window', :size => 1}</td>
-    </tr><tr class=\"image-title\" data-row-number='#{row_number}'>
-      <td colspan=\"3\"><label>#{
-        content_tag('span', _('Title')) +
-        text_field_tag('block[images][][title]', image[:title], :class => 'highlight-title', :size => 45)
-      }</label></td>
+    </tr>
+    <tr data-row-number='#{row_number}'>
+      <td colspan='3'>
+        <label>
+          #{content_tag('span', _('Title'))}
+          #{text_field_tag('block[images][][title]', image[:title], :class => 'highlight-title', :size => 45)}
+        </label>
+      </td>
+    </tr >
+    <tr class='image-title'>
+      <td colspan='3'>
+        <label>
+          #{content_tag('span', _('Description'))}
+          #{text_field_tag 'block[images][][description]', image[:description], :class => 'highlight-description', :size => 39, :maxlength=>140}
+        </label>
+      </td>
+
       <td>#{button_without_text(:delete, _('Remove'), '#', class: 'delete-highlight', data: {confirm: _('Are you sure you want to remove this highlight')})}</td>
     </tr>
     ".html_safe
