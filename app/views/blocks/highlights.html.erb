@@ -2,6 +2,14 @@
 
 <% if !block.featured_images.empty? %>
   <div class='highlights-border'>
+    <% if block.show_tabs %>
+    <div>
+      <div id="go-prev">&lt;&lt;</div>
+
+      <div id="go-next">&gt;&gt;</div>
+    </div>
+    <% end %>
+
     <div class='highlights-container'>
       <% block.featured_images.each do |img| %>
         <a href="<%= img[:address] %>" <%= 'target="_blank"' if img[:new_window] %> title="<%= img[:title] %>" class="highlights-image-link">
@@ -43,6 +51,8 @@
      var options = {
        fx: 'customFade',
        fastOnEvent: 1,
+       next: "#go-next",
+       prev: "#go-prev",
        timeout: <%= block.interval * 1000 %>
      };
      <% if block.navigation %>

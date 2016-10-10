@@ -1,11 +1,12 @@
 class HighlightsBlock < Block
 
-  attr_accessible :images, :interval, :shuffle, :navigation
+  attr_accessible :images, :interval, :shuffle, :navigation, :show_tabs
 
   settings_items :images, :type => Array, :default => []
   settings_items :interval, :type => 'integer', :default => 4
   settings_items :shuffle, :type => 'boolean', :default => false
   settings_items :navigation, :type => 'boolean', :default => false
+  settings_items :show_tabs, :type => 'boolean', :default => false
 
   before_save do |block|
     block.images = block.images.delete_if { |i| i[:image_id].blank? and i[:address].blank? and i[:position].blank? and i[:title].blank? }
