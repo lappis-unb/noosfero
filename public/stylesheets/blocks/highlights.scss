@@ -89,3 +89,45 @@
 .block-config-options.HighlightsBlock-options .image-title span {
   padding-right: 5px;
 }
+
+.highlights-border {
+  #go-prev, #go-next {
+    position: absolute;
+    z-index: 10;
+    background-color: #CCCCCC;
+    width: 60px;
+    height: 40px;
+    cursor: pointer;
+    top: 40%;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 40px;
+    opacity: 0.5;
+  }
+
+  #go-prev:hover, #go-next:hover {
+    opacity: 1;
+  }
+
+  #go-prev {
+    left: 0px;
+  }
+
+  #go-next {
+    right: 1%;
+  }
+}
+
+.highlights-title, .highlights-description {
+  width: 99%;
+}
+
+.highlights-title {
+  height: 21px;
+  margin-bottom: 43px;
+  font-size: 20px;
+}
+
+.highlights-description {
+}
+
