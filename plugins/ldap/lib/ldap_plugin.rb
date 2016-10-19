@@ -43,7 +43,6 @@ class LdapPlugin < Noosfero::Plugin
     login = context.params[:login] || context.params[:user][:login]
     password = context.params[:password] || context.params[:user][:password]
     ldap = LdapAuthentication.new(context.environment.ldap_plugin_attributes)
-
     # try to authenticate
     begin
       attrs = ldap.authenticate(login, password)
@@ -53,19 +52,21 @@ class LdapPlugin < Noosfero::Plugin
     return nil if attrs.nil?
 
     user_login = get_login(attrs, ldap.attr_login, login)
+
     user = User.find_or_initialize_by(login: user_login)
     return nil if !user.new_record? && !user.activated?
 
-    user.login = user_login
-    user.email = get_email(attrs, login)
-    user.name =  attrs[:fullname]
+    if environment.ldap_plugin_override_user_email
+      user.email = get_email(attrs, login)
+    else
+      user.email ||= get_email(attrs,login)
+    end
     user.password = password
     user.password_confirmation = password
     user.person_data = plugins.pipeline(:ldap_plugin_set_profile_data, attrs, context.params).last[:profile_data]
     user.activated_at = Time.now.utc
     user.activation_code = nil
 
-    ldap = LdapAuthentication.new(context.environment.ldap_plugin_attributes)
     begin
       if user.save
         user.activate
@@ -76,18 +77,20 @@ class LdapPlugin < Noosfero::Plugin
     rescue
       #User not saved
     end
-
     user
   end
 
+  #TODO colocar validação na hora de salvar as conf do ldap pra ter só um attr_login
   def get_login(attrs, attr_login, login)
-    user_login = Array.wrap(attrs[attr_login.split.first.to_sym])
-    user_login.empty? ? login : user_login.first
+    return login.to_s.to_slug if attr_login.blank?
+    
+    user_login = attrs[attr_login.to_sym].blank? ? login : attrs[attr_login.to_sym]
+    user_login.to_s.to_slug
   end
 
   def get_email(attrs, login)
     return attrs[:mail] unless attrs[:mail].blank?
-
+    
     if attrs[:fullname]
       return attrs[:fullname].to_slug + "@ldap.user"
     else

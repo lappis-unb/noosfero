@@ -44,7 +44,6 @@ class LdapAuthentication
   def authenticate(login, password)
     return nil if login.blank? || password.blank?
     attrs = get_user_dn(login, password)
-
     if attrs && attrs[:dn] && authenticate_dn(attrs[:dn], password)
       return attrs.except(:dn)
     end
@@ -124,7 +123,7 @@ class LdapAuthentication
 
     search_filter = object_filter & login_filter
     if f = ldap_filter
-      search_filter = search_filter & f
+      search_filter = search_filter & ldap_filter
     end
 
     ldap_con.search( :base => self.base_dn, :filter => search_filter, :attributes=> search_attributes) do |entry|
@@ -134,7 +133,6 @@ class LdapAuthentication
         attrs = {:dn => entry.dn}
       end
     end
-
     attrs
   end
 

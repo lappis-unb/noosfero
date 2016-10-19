@@ -128,6 +128,13 @@ class LdapPluginAdminControllerTest < ActionController::TestCase
     assert_not_nil @environment.ldap_plugin_tls
   end
 
+  should 'update ldap override email' do
+    post :update, :environment => { :ldap_plugin_override_user_email => '1' }
+
+    @environment.reload
+    assert_not_nil @environment.ldap_plugin_override_user_email
+  end
+
   should 'have a field to manage the host' do
     get :index
 
@@ -194,4 +201,9 @@ class LdapPluginAdminControllerTest < ActionController::TestCase
     assert_tag :tag => 'input', :attributes => {:id => 'environment_ldap_plugin_tls'}
   end
 
+  should 'have a field to manage user email override' do
+    get :index
+
+    assert_tag :tag => 'input', :attributes => {:id => 'environment_ldap_plugin_override_user_email'}
+  end
 end

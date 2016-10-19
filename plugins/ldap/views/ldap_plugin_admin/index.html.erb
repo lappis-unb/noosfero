@@ -39,6 +39,10 @@
     <td><%= _('LDAPS') %></td>
     <td><%= check_box :environment, :ldap_plugin_tls, {}, '1', '0' %></td>
   </tr>
+  <tr>
+    <td><%= _('Override Mail') %></td>
+    <td><%= check_box :environment, :ldap_plugin_override_user_email %></td>
+  </tr>
 </table>
 
 <table>

@@ -164,13 +164,13 @@ class LdapAuthenticationTest < ActiveSupport::TestCase
   should 'dont crash when entry key is nil' do
     entry = pseudoEntry('name' => nil)
     name = LdapAuthentication.get_attr entry, 'name'
-    assert_equal name, nil
+    assert_nil name
   end
 
   should 'dont crash when entry key does not exists' do
     entry = pseudoEntry({})
     name = LdapAuthentication.get_attr entry, 'name'
-    assert_equal name, nil
+    assert_nil name
   end
 
   if ldap_configured?
@@ -184,17 +184,17 @@ class LdapAuthenticationTest < ActiveSupport::TestCase
 
     should 'return nil with a invalid ldap user' do
       auth = LdapAuthentication.new(@ldap_config['server'])
-      assert_equal nil, auth.authenticate('nouser','123456')
+      assert_nil auth.authenticate('nouser','123456')
     end
 
     should 'return nil without a login' do
       auth = LdapAuthentication.new(@ldap_config['server'])
-      assert_equal nil, auth.authenticate('', @ldap_config['user']['password'])
+      assert_nil auth.authenticate('', @ldap_config['user']['password'])
     end
 
     should 'return nil without a password' do
       auth = LdapAuthentication.new(@ldap_config['server'])
-      assert_equal nil, auth.authenticate(@ldap_config['user']['login'],'')
+      assert_nil auth.authenticate(@ldap_config['user']['login'],'')
     end
 
     should 'return any user without filter' do

@@ -84,10 +84,22 @@ class EnvironmentTest < ActiveSupport::TestCase
     assert_equal value, @enviroment.ldap_plugin['attr_login']
   end
 
+  should 'ldap_plugin_attr_login= define the ldap attr_login as the first word' do
+    value = 'uid mail'
+    @enviroment.ldap_plugin_attr_login= value
+    assert_equal 'uid', @enviroment.ldap_plugin['attr_login']
+  end
+
   should 'ldap_plugin_attr_login return the defined ldap attr_login' do
     value = 'uid'
     @enviroment.ldap_plugin_attr_login= value
     assert_equal value, @enviroment.ldap_plugin_attr_login
+  end
+
+  should 'ldap_plugin_attr_login return the defined ldap attr_login when two words are set' do
+    value = 'uid mail'
+    @enviroment.ldap_plugin_attr_login= value
+    assert_equal 'uid', @enviroment.ldap_plugin_attr_login
   end
 
   should 'ldap_plugin_attr_fullname= define the ldap attr_fullname' do

@@ -29,9 +29,4 @@ class LdapPluginTest < ActiveSupport::TestCase
     assert_equal 'test2', plugin.get_login({:uid => 'test'}, 'mail', 'test2')
   end
 
-  should 'use the first word at attr_login as the login key' do
-    plugin = LdapPlugin.new
-    assert_equal 'test', plugin.get_login({:uid => 'test', :mail => 'test@test'}, 'uid mail', 'test2')
-  end
-
 end

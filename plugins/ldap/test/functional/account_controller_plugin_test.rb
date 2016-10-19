@@ -9,6 +9,7 @@ class AccountControllerPluginTest < ActionController::TestCase
     @environment.enabled_plugins = ['LdapPlugin']
     @ldap_config = load_ldap_config
     @environment.ldap_plugin= @ldap_config['server'] unless @ldap_config.nil?
+    @environment.ldap_plugin.stringify_keys!
     @environment.save!
   end
 
@@ -36,9 +37,9 @@ class AccountControllerPluginTest < ActionController::TestCase
     assert_tag(:input, :attributes => {:id => 'profile_data_contact_phone'})
   end
 
-  if ldap_configured?
+   if ldap_configured?
 
-    should 'authenticate an existing noosfero user with ldap and loggin' do
+    should 'authenticate an existing noosfero user with ldap and login' do
       user = create_user(@ldap_config['user']['login'], :email => 'testuser@example.com', :password => 'test', :password_confirmation => 'test')
       user.activate
       count = User.count
@@ -74,8 +75,18 @@ class AccountControllerPluginTest < ActionController::TestCase
       assert session[:user]
     end
 
+    should 'override user email if override option is enabled' do
+      @environment.ldap_plugin_override_user_email = 1
+      @environment.save
+      new_user = create_user(@ldap_config['user']['login'], :email => 'emailserio@gmail.com', :password => 'test', :password_confirmation => 'test')
+      new_user.activate
+
+      post :login, :user => @ldap_config['user']
+      user =  User.find_or_initialize_by(login: @ldap_config['user']['login'])
+      
+      assert_equal @ldap_config['user']['email'], user.email
+    end
   else
     puts LDAP_SERVER_ERROR_MESSAGE
   end
-
 end

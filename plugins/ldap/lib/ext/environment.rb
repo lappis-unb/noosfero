@@ -6,7 +6,13 @@ class Environment
 
   validates_presence_of :ldap_plugin_host, :if => lambda {|env| !env.ldap_plugin.blank? }
 
-  attr_accessible :ldap_plugin_host, :ldap_plugin_port, :ldap_plugin_tls, :ldap_plugin_onthefly_register, :ldap_plugin_account, :ldap_plugin_account_password, :ldap_plugin_filter, :ldap_plugin_base_dn, :ldap_plugin_attr_mail, :ldap_plugin_attr_login, :ldap_plugin_attr_fullname, :ldap_plugin_allow_password_recovery
+  attr_accessible :ldap_plugin_host, :ldap_plugin_port, :ldap_plugin_tls,
+                  :ldap_plugin_onthefly_register, :ldap_plugin_account,
+                  :ldap_plugin_account_password, :ldap_plugin_filter,
+                  :ldap_plugin_base_dn, :ldap_plugin_attr_mail,
+                  :ldap_plugin_attr_login, :ldap_plugin_attr_fullname,
+                  :ldap_plugin_allow_password_recovery,
+                  :ldap_plugin_override_user_email
 
   def ldap_plugin_attributes
     self.ldap_plugin || {}
@@ -65,7 +71,7 @@ class Environment
 
   def ldap_plugin_attr_login= login
     self.ldap_plugin = {} if self.ldap_plugin.blank?
-    self.ldap_plugin['attr_login'] = login
+    self.ldap_plugin['attr_login'] = login.split(" ").first
   end
 
   def ldap_plugin_attr_fullname
@@ -122,4 +128,13 @@ class Environment
     self.ldap_plugin['allow_password_recovery'] = (value.to_i == 1)
   end
 
+  def ldap_plugin_override_user_email
+    self.ldap_plugin['override_user_email'] == true
+  end
+
+  def ldap_plugin_override_user_email= value
+    self.ldap_plugin = {} if self.ldap_plugin.blank?
+    self.ldap_plugin['override_user_email'] = (value.to_i == 1)
+  end
 end
+

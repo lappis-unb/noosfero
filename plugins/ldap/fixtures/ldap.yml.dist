@@ -9,7 +9,9 @@ server:
   attr_mail: "mail"
   onthefly_register: true
   filter: ""
+  override_mail: true
   tls: false
 user:
   login: 'valid_ldap_login'
   password: 'valid_ldap_password'
+  email: 'valid_ldap_email'
