@@ -559,6 +559,47 @@ module ApplicationHelper
     NoosferoFormBuilder::output_field(label, field_html, field_id)
   end
 
+  def input_select_field(component_id, input_name, select_text, itterable, image={}, placeholder=_("Type what you want to select"))
+    list_data = itterable.map { |item|
+      "<li data-id='#{item[:id]}'>#{item[:text]}</li>"
+    }.join()
+
+    "
+      <div id='#{component_id}' class='select-input'>
+        <div class='select-input-button'>
+            <span>#{image.empty? ? select_text : image['image_src']}</span>
+        </div>
+
+        <div class='select-input-container'>
+            <div class='select-input-field'>
+                <input type='text' name='select_input_search' placeholder='#{placeholder}' value='#{image['image_src']}'>
+                <input type='hidden' name='#{input_name}' value='#{image['image_id']}'>
+            </div>
+
+            <div class='select-input-list'>
+                <ul>#{list_data}</ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      (function() {
+        let selectInput = new window.noosfero.SelectInput('#{component_id}');
+      }) ();
+    </script>
+    "
+  end
+
+  def gallery_image_list galleries
+    list = []
+
+    galleries.each do |gallery|
+      list |= gallery.images.map {|image| "#{gallery.name}/#{image.name}" }
+    end
+
+    list
+  end
+
   alias_method :display_form_field, :labelled_form_field
 
   def labelled_fields_for(name, object = nil, options = {}, &proc)

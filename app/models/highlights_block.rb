@@ -49,4 +49,16 @@ class HighlightsBlock < Block
     owner.image_galleries
   end
 
+  def galleries_images
+    profile_images = []
+
+    folder_choices.each do |gallery|
+      gallery.images.select(:id, :name).each do |image|
+        profile_images << {text: "#{gallery.name}/#{image.name}", id: image.id}
+      end
+    end
+
+    profile_images
+  end
+
 end

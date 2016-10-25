@@ -16,7 +16,7 @@ module BlockHelper
     "
     <tr class=\"image-data-line\" data-row-number='#{row_number}'>
       <td>
-        #{select_tag 'block[images][][image_id]', content_tag(:option) + option_groups_from_collection_for_select(block.folder_choices, :images, :name, :id, :name, image[:image_id].to_i).html_safe}
+        #{input_select_field("select-input-#{row_number}",  "block[images][][image_id]", _("Select an image"), @block.galleries_images, image)}
       </td>
       <td>#{text_field_tag 'block[images][][address]', image[:address], :class => 'highlight-address', :size => 20}</td>
       <td>#{text_field_tag 'block[images][][position]', image[:position], :class => 'highlight-position', :size => 1}</td>
@@ -30,7 +30,7 @@ module BlockHelper
         </label>
       </td>
     </tr >
-    <tr class='image-title'>
+    <tr class='image-title' data-row-number='#{row_number}'>
       <td colspan='3'>
         <label>
           #{content_tag('span', _('Description'))}
