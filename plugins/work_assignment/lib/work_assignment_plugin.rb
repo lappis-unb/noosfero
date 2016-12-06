@@ -81,4 +81,8 @@ class WorkAssignmentPlugin < Noosfero::Plugin
       end
     end
   end
+
+  def js_files
+    ['add_tinymce_to_work.js']
+  end
 end

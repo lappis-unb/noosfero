@@ -1,6 +1,6 @@
 <%= render :partial => 'folder', :locals => {:f => f} %>
 
-<%= labelled_form_field(_('Default email message:'), text_area(:article, :default_email, :rows => 3, :cols => 64)) %>
+<%= labelled_form_field(_('Default email message:'), text_area(:article, :default_email, :rows => 3, :cols => 64, :class=>current_editor('simple'))) %>
 
 <%= labelled_check_box(_('The submissions can be viewed by anyone'), 'article[publish_submissions]', true, @article.publish_submissions) %>
 
