@@ -3,6 +3,12 @@ module WorkAssignmentPlugin::Helper
 
   def display_submissions(work_assignment, user)
     return if work_assignment.submissions.empty?
+
+    params[:per_page] = 10 unless params[:per_page]
+    params[:npage] = 1 unless params[:npage]
+
+    assignments = work_assignment.children.order('name ASC').paginate(per_page: params[:per_page], page: params[:npage])
+
     content_tag('table',
       content_tag('tr',
         content_tag('th', c_('Author'), :style => 'width: 50%') +
@@ -11,8 +17,14 @@ module WorkAssignmentPlugin::Helper
         content_tag('th', '') +
         content_tag('th', '')
       ).html_safe +
-      work_assignment.children.order('name ASC').map {|author_folder| display_author_folder(author_folder, user)}.join("\n").html_safe
-    )
+
+      assignments.map { |author_folder|
+        display_author_folder(author_folder, user)
+      }.join("\n").html_safe
+    ) +
+    content_tag('div',
+      pagination_links(assignments, {:param_name => 'npage', :page_links => true})
+    ).html_safe
   end
 
   def display_author_folder(author_folder, user)
