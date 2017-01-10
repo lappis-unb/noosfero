@@ -15,9 +15,10 @@ module Api
         #   from             - date where the search will begin. If nothing is passed the default date will be the date of the first article created
         #   oldest           - Collect the oldest articles. If nothing is passed the newest articles are collected
         #   limit            - amount of articles returned. The default value is 20
+        #   content_type     - type of article to filter. Example: Folder, Event and UploadedFile
         #
         # Example Request:
-        #  GET host/api/v1/articles?from=2013-04-04-14:41:43&until=2015-04-04-14:41:43&limit=10&private_token=e96fff37c2238fdab074d1dcea8e6317
+        #  GET host/api/v1/articles?from=2013-04-04-14:41:43&until=2015-04-04-14:41:43&limit=10&private_token=e96fff37c2238fdab074d1dcea8e6317&content_type=event
 
         desc 'Return all articles of all kinds' do
           detail 'Get all articles filtered by fields in query params'
@@ -62,7 +63,7 @@ module Api
             { :success => true }
           rescue Exception => exception
             render_api_error!(_('The article couldn\'t be removed due to some problem. Please contact the administrator.'), 400)
-          end          
+          end
         end
 
         desc 'Report a abuse and/or violent content in a article by id' do

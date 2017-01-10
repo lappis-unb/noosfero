@@ -43,6 +43,11 @@ module Api
           present_partial current_person, :with => Entities::Person, :current_person => current_person
         end
 
+        get "/me/events" do
+          articles = find_articles(current_person)
+          present_partial articles, :with => Entities::Article
+        end
+
         desc "Return the person information"
         get ':id' do
           person = environment.people.visible.find_by(id: params[:id])
