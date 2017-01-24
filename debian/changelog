@@ -1,3 +1,9 @@
+noosfero (1.6.1+portal-0.1.2) jessie-test; urgency=medium
+
+  * New Portal Package
+
+ -- Gabriel Silva <gabriel93.silva@gmail.com>  Tue, 24 Jan 2017 12:11:39 +0000
+
 noosfero (1.6.1+portal-0.1.1) jessie-test; urgency=medium
 
   * New Portal Package
