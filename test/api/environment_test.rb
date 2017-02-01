@@ -248,4 +248,41 @@ class EnvironmentTest < ActiveSupport::TestCase
     person = create_user('mytestuser').person
     assert_includes environment.available_blocks(person), CommunitiesBlock
   end
+
+  should 'return signup fields' do
+    environment = Environment.default
+    environment.custom_person_fields = {
+        "image" => {
+        "active"=>"true",
+        "required" =>"false",
+        "signup"=>"true"
+      }
+    }
+    environment.save
+
+    get "/api/v1/environments/signup_person_fields"
+    assert_equal 200, last_response.status
+    assert_equal ["image"].to_json, last_response.body
+  end
+
+  should 'return person fields for signup when multiple environments' do
+    other_env = fast_create(Environment)
+    other_env.custom_person_fields = {
+        "image" => {
+        "active"=>"true",
+        "required" =>"false",
+        "signup"=>"true"
+      }
+    }
+    other_env.save
+    default_env = Environment.default
+    assert_not_equal other_env.id, default_env.id
+
+    get "/api/v1/environments/signup_person_fields?id=#{other_env.id}"
+    json = JSON.parse(last_response.body)
+    assert_equal ["image"].to_json, last_response.body
+
+    get "/api/v1/environments/signup_person_fields"
+    assert_equal [].to_json, last_response.body
+  end
 end
