@@ -20,6 +20,12 @@ module Api
           end
         end
 
+        desc "Portal related to a given environment"
+        get '/portal_community' do
+          environment = target_env(params)
+          present environment.portal_community, with: Entities::Community, current_person: current_person
+        end
+
         desc "Return the person information"
         get '/signup_person_fields' do
           environment = target_env(params)

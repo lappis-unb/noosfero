@@ -141,4 +141,50 @@ class EnvironmentTest < ActiveSupport::TestCase
     json = JSON.parse(last_response.body)
     assert_equal [].to_json, last_response.body
   end
+
+  should 'return the portal community of a given environment' do
+    community = fast_create(Community)
+    env = Environment.default
+    env.portal_community = community
+    env.save
+
+    get "/api/v1/environment/portal_community?id=#{env.id}"
+    json = JSON.parse(last_response.body)
+    assert_equal json['community']['id'], community.id
+  end
+
+  should 'return the portal community for the correct environment' do
+    community1 = fast_create(Community)
+    community2 = fast_create(Community)
+
+    env1 = Environment.default
+    env1.portal_community = community1
+    env1.save
+
+    env2 = fast_create(Environment)
+    env2.portal_community = community2
+    env2.save
+
+    get "/api/v1/environment/portal_community?id=#{env1.id}"
+    json = JSON.parse(last_response.body)
+    assert_equal json['community']['id'], community1.id
+
+    get "/api/v1/environment/portal_community?id=#{env2.id}"
+    json = JSON.parse(last_response.body)
+    assert_equal json['community']['id'], community2.id
+  end
+
+  should 'return the portal community of the default environment in case of no id' do
+    env1 = Environment.default
+    community = fast_create(Community)
+
+    env1.portal_community = community
+    env1.save
+    env2 = fast_create(Environment)
+
+    get "/api/v1/environment/portal_community"
+    json = JSON.parse(last_response.body)
+    assert_equal json['community']['id'], community.id
+  end
+
 end
