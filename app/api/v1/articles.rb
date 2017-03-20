@@ -47,7 +47,7 @@ module Api
           present_article(environment)
         end
 
-        post ':id' do
+        patch ':id' do
           article = environment.articles.find(params[:id])
           return forbidden! unless article.allow_edit?(current_person)
           article.update_attributes!(asset_with_image(params[:article]))
