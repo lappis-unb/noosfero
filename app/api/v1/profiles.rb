@@ -20,7 +20,7 @@ module Api
 
           if profile
             type_map = {
-              Person => Entities::Person, 
+              Person => Entities::Person,
               Community => Entities::Community,
               Enterprise => Entities::Enterprise
             }[profile.class] || Entities::Profile
@@ -30,9 +30,9 @@ module Api
             not_found!
           end
         end
-        
+
         desc "Update profile information"
-        post ':id' do
+        patch ':id' do
           authenticate!
           profile = environment.profiles.find_by(id: params[:id])
           return forbidden! unless profile.allow_edit?(current_person)

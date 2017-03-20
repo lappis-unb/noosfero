@@ -51,7 +51,7 @@ module Api
         end
 
         desc "Update person information"
-        post ':id' do
+        patch ':id' do
           authenticate!
           return forbidden! if current_person.id.to_s != params[:id]
           current_person.update_attributes!(asset_with_image(params[:person]))
