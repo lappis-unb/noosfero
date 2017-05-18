@@ -1,0 +1,14 @@
+<h2><%=_("This form is for linking your Noosfero account with your %s account") % environment.ldap_plugin_base_name%></h2>
+
+<%= labelled_form_for :user,
+   :url => { :controller => 'ldap_plugin_myprofile', :action => 'index' }  do |f| %>
+
+<%= f.text_field :login, :id => 'user_login', :onchange => 'this.value = convToValidLogin( this.value )' %>
+
+<%= f.password_field :password, :id => 'user_password' %>
+
+<%= button_bar do %>
+  <%= submit_button 'login', _('Link %s Account') % environment.ldap_plugin_base_name, {:data => { confirm: _('An account can only be linked once. Are you sure you want to continue?')}} %>
+<% end %>
+
+<% end %>

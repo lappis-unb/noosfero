@@ -122,7 +122,7 @@ class LdapAuthentication
     attrs = {}
 
     search_filter = object_filter & login_filter
-    if f = ldap_filter
+    if ldap_filter
       search_filter = search_filter & ldap_filter
     end
 

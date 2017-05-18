@@ -8,7 +8,7 @@ class LdapPlugin < Noosfero::Plugin
   end
 
   def self.plugin_description
-    _("A plugin that add ldap support.")
+    _("A plugin that adds LDAP support.")
   end
 
   module Hotspots
@@ -43,18 +43,24 @@ class LdapPlugin < Noosfero::Plugin
     login = context.params[:login] || context.params[:user][:login]
     password = context.params[:password] || context.params[:user][:password]
     ldap = LdapAuthentication.new(context.environment.ldap_plugin_attributes)
+
     # try to authenticate
     begin
       attrs = ldap.authenticate(login, password)
     rescue Net::LDAP::LdapError => e
       puts "LDAP is not configured correctly"
     end
+
     return nil if attrs.nil?
 
     user_login = get_login(attrs, ldap.attr_login, login)
 
     user = User.find_or_initialize_by(login: user_login)
     return nil if !user.new_record? && !user.activated?
+
+    if user.new_record?
+      user.ldap_user = true
+    end
 
     if environment.ldap_plugin_override_user_email
       user.email = get_email(attrs, login)
@@ -108,4 +114,11 @@ class LdapPlugin < Noosfero::Plugin
     end
   end
 
+  def control_panel_buttons
+    user = profile.user if profile.person?
+    if user && !user.ldap_user
+      {title: _('Link %s Account') % environment.ldap_plugin_base_name, icon: 'custom-forms',
+       url: {profile: profile.identifier, controller: 'ldap_plugin_myprofile'}}
+    end
+  end
 end

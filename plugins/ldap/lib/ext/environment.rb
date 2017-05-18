@@ -12,7 +12,7 @@ class Environment
                   :ldap_plugin_base_dn, :ldap_plugin_attr_mail,
                   :ldap_plugin_attr_login, :ldap_plugin_attr_fullname,
                   :ldap_plugin_allow_password_recovery,
-                  :ldap_plugin_override_user_email
+                  :ldap_plugin_override_user_email, :ldap_plugin_base_name
 
   def ldap_plugin_attributes
     self.ldap_plugin || {}
@@ -135,6 +135,16 @@ class Environment
   def ldap_plugin_override_user_email= value
     self.ldap_plugin = {} if self.ldap_plugin.blank?
     self.ldap_plugin['override_user_email'] = (value.to_i == 1)
+  end
+
+  def ldap_plugin_base_name
+    self.ldap_plugin = {} if self.ldap_plugin.blank?
+    self.ldap_plugin['base_name']
+  end
+
+  def ldap_plugin_base_name= base_name
+    self.ldap_plugin = {} if self.ldap_plugin.blank?
+    self.ldap_plugin['base_name'] = (base_name.blank? ? "LDAP" : base_name)
   end
 end
 

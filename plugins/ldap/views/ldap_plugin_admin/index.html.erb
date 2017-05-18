@@ -43,6 +43,10 @@
     <td><%= _('Override Mail') %></td>
     <td><%= check_box :environment, :ldap_plugin_override_user_email %></td>
   </tr>
+  <tr>
+    <td><%= _('LDAP Base Name') %></td>
+    <td><%= text_field :environment, :ldap_plugin_base_name %></td>
+  </tr>
 </table>
 
 <table>

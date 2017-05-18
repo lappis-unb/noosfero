@@ -7,9 +7,9 @@ class LdapPluginAdminController < PluginAdminController
 
   def update
     if @environment.update(params[:environment])
-      session[:notice] = _('Ldap configuration updated successfully.')
+      session[:notice] = _('LDAP configuration updated successfully.')
     else
-      session[:notice] = _('Ldap configuration could not be saved.')
+      session[:notice] = _('LDAP configuration could not be saved.')
     end
     render :action => 'index'
   end

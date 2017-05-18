@@ -26,7 +26,7 @@ class LdapPluginAdminControllerTest < ActionController::TestCase
     @environment.save
     assert_nil @environment.ldap_plugin_host
     post :update, :environment => { :ldap_plugin_host => 'http://something' }
-    assert_equal 'Ldap configuration updated successfully.', @request.session[:notice]
+    assert_equal 'LDAP configuration updated successfully.', @request.session[:notice]
   end
 
   should 'wrong ldap update display a message unsuccessfully' do
@@ -34,7 +34,7 @@ class LdapPluginAdminControllerTest < ActionController::TestCase
     @environment.save
     assert_nil @environment.ldap_plugin_host
     post :update, :environment => { :ldap_plugin_host => '' }
-    assert_equal 'Ldap configuration could not be saved.', @request.session[:notice]
+    assert_equal 'LDAP configuration could not be saved.', @request.session[:notice]
   end
 
   should 'update ldap successfully render index template' do
@@ -135,6 +135,13 @@ class LdapPluginAdminControllerTest < ActionController::TestCase
     assert_not_nil @environment.ldap_plugin_override_user_email
   end
 
+  should 'update ldap base name' do
+    post :update, :environment => { :ldap_plugin_base_name => 'test' }
+
+    @environment.reload
+    assert_not_nil @environment.ldap_plugin_base_name
+  end
+
   should 'have a field to manage the host' do
     get :index
 
@@ -205,5 +212,11 @@ class LdapPluginAdminControllerTest < ActionController::TestCase
     get :index
 
     assert_tag :tag => 'input', :attributes => {:id => 'environment_ldap_plugin_override_user_email'}
+  end
+
+    should 'have a field to manage ldap base name' do
+    get :index
+
+    assert_tag :tag => 'input', :attributes => {:id => 'environment_ldap_plugin_base_name'}
   end
 end
