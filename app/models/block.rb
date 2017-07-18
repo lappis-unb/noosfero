@@ -103,7 +103,11 @@ class Block < ApplicationRecord
   end
 
   def display_to_user?(user)
-    display_user == 'all' || (user.nil? && display_user == 'not_logged') || (user && display_user == 'logged') || (user && !self.owner.kind_of?(Environment) && display_user == 'followers' && owner.in_social_circle?(user) && self.owner.kind_of?(Profile))
+    display_user == 'all' ||
+    (user.nil? && display_user == 'not_logged') ||
+    (user && display_user == 'logged') ||
+    (user && !self.owner.kind_of?(Environment) && display_user == 'followers' && owner.in_social_circle?(user)) ||
+    (user && display_user == 'administrator' && user.is_admin?(self.owner))
   end
 
   def display_always(context)
@@ -142,6 +146,8 @@ class Block < ApplicationRecord
   # * <tt>'all'</tt>: the block is always displayed
   # * <tt>'logged'</tt>: the block is displayed to logged users only
   # * <tt>'not_logged'</tt>: the block is displayed only to not logged users
+  # * <tt>'followers'</tt>: the block is displayed only to users within the social circle
+  # * <tt>'administrator'</tt>: the block is displayed only to the admin of the social circle 
   settings_items :display_user, :type => :string, :default => 'all'
 
   # The block can be configured to be displayed in all languages or in just one language. It can assume any locale of the environment:
@@ -278,7 +284,8 @@ class Block < ApplicationRecord
       'all'            => _('All users'),
       'logged'         => _('Logged'),
       'not_logged'     => _('Not logged'),
-      'followers'      => owner.class != Environment && owner.organization? ? _('Members') : _('Friends')
+      'followers'      => owner.class != Environment && owner.organization? ? _('Members') : _('Friends'),
+      'administrator'  => _('Administrator')
     }
   end
 

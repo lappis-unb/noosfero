@@ -366,6 +366,48 @@ class BlockTest < ActiveSupport::TestCase
     refute block.display_to_user?(person_friend)
   end
 
+  should 'display block to environment administrator for display_user = administrator' do
+    role = create(Role, :name => 'just_another_admin_role')
+    environment = fast_create(Environment)
+    user = create_user('user').person
+    environment.affiliate(user, role)
+    role.update(:permissions => ['view_environment_admin_panel'])
+
+    box = fast_create(Box, :owner_id => environment.id, :owner_type => 'Environment')
+    block = create(Block, :box_id => box.id)
+    block.display_user = 'administrator'
+    block.save!
+
+    assert block.display_to_user?(user)
+  end
+
+  should 'display block to community administrator for display_user = administrator' do
+    role = create(Role, :name => 'just_another_admin_role')
+    community = fast_create(Community)
+    user = create_user('user').person
+    community.affiliate(user, role)
+    role.update(:permissions => ['view_environment_admin_panel'])
+
+    box = fast_create(Box, :owner_id => community.id, :owner_type => 'Community')
+    block = create(Block, :box_id => box.id)
+    block.display_user = 'administrator'
+    block.save!
+
+    assert block.display_to_user?(user)
+  end
+
+  should 'not display block to non administrator user for display_user = administrator' do
+    environment = fast_create(Environment)
+    user = create_user('user').person
+
+    box = fast_create(Box, :owner_id => environment.id, :owner_type => 'Environment')
+    block = create(Block, :box_id => box.id)
+    block.display_user = 'administrator'
+    block.save!
+
+    refute block.display_to_user?(user)
+  end
+
   should 'get limit as a number when limit is string' do
     block = RecentDocumentsBlock.new
     block.settings[:limit] = '5'
